@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Audiobooks</string>
+    <string name="server_client_id">297266193635-25hbg53cerhn339h377od9n59l96p8fv.apps.googleusercontent.com</string>
+    <string name="title_activity_home">HomeActivity</string>
+
+    <string name="title_activity_login2">Login2Activity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="welcome_text">Welcome to Audiobooks</string>
+    <string name="app_version">audiobooks.1.0.0</string>
+    <string name="login_msg">Sign in and start listening audiobooks for free!</string>
+</resources>
