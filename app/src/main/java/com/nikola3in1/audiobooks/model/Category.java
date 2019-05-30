@@ -1,30 +1,38 @@
 package com.nikola3in1.audiobooks.model;
 
-import java.util.ArrayList;
-
 public class Category {
-    private ArrayList<Book> books = new ArrayList<>();
-    private String name;
+    private String title;
+    private String imageUrl;
 
-    public Category(String name, ArrayList<Book> books) {
-
-        this.books = books;
-        this.name = name;
+    public Category(String title, String imageUrl) {
+        this.title = title;
+        this.imageUrl = imageUrl;
     }
 
-    public ArrayList<Book> getBooks() {
-        return books;
+    public String getTitle() {
+        return title;
     }
 
-    public void setBooks(ArrayList<Book> books) {
-        this.books = books;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getName() {
-        return name;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "title='" + title + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                '}';
     }
 }
+
+
+

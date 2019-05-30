@@ -15,9 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nikola3in1.audiobooks.R;
-import com.nikola3in1.audiobooks.adapters.HomeCategoryAdapter;
+import com.nikola3in1.audiobooks.adapters.FeaturedFragmentAdapter;
 import com.nikola3in1.audiobooks.model.Book;
-import com.nikola3in1.audiobooks.model.Category;
+import com.nikola3in1.audiobooks.model.FeaturedList;
 
 import java.util.ArrayList;
 
@@ -35,22 +35,22 @@ public class FeaturedFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_featured, container, false);
         // Fetch data from backend ...
-        ArrayList<Category> categories = getTestData();
-        initCategories(contentView,categories);
+        ArrayList<FeaturedList> categories = getTestData();
+        initFeaturedLists(contentView,categories);
         return contentView;
     }
 
-    private void initCategories(View contentView, ArrayList<Category> categories) {
+    private void initFeaturedLists(View contentView, ArrayList<FeaturedList> categories) {
         Context ctx = getActivity().getApplicationContext();
 
         // Add Categories to home page
-        for (Category c : categories) {
+        for (FeaturedList c : categories) {
             // Create LinearLayout for category, here we add RecyclerView and TextView
             LinearLayout v = new LinearLayout(ctx);
             v.setLayoutParams(new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT));
             v.setOrientation(LinearLayout.VERTICAL);
 
-            //Category name
+            //FeaturedList name
             TextView txt = new TextView(ctx);
             txt.setText(c.getName());
             txt.setTextSize(24);
@@ -60,7 +60,7 @@ public class FeaturedFragment extends Fragment {
             RecyclerView recyclerView = new RecyclerView(ctx);
             recyclerView.setLayoutParams(new LinearLayout.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT));
             recyclerView.setLayoutManager(layoutManager);
-            HomeCategoryAdapter adapter = new HomeCategoryAdapter(ctx, c.getBooks());
+            FeaturedFragmentAdapter adapter = new FeaturedFragmentAdapter(ctx, c.getBooks());
             recyclerView.setAdapter(adapter);
 
             // Add nodes to new LinearLayout
@@ -68,13 +68,13 @@ public class FeaturedFragment extends Fragment {
             v.addView(recyclerView);
 
             // Insert into ScrollView
-            ViewGroup insertPoint = (ViewGroup) contentView.findViewById(R.id.home_categories_layout);
-            insertPoint.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            ViewGroup insertPoint = contentView.findViewById(R.id.featured_lists_layout);
+            insertPoint.addView(v, -1, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
     }
 
     // TEST DATA
-    ArrayList<Category> getTestData() {
+    ArrayList<FeaturedList> getTestData() {
         ArrayList<Book> books = new ArrayList<>();
         books.add(new Book("Harry Potter and the sorcerers stone", "J.K. Rowling", "https://images-na.ssl-images-amazon.com/images/I/51HSkTKlauL._SX346_BO1,204,203,200_.jpg"));
         books.add(new Book("Harry Potter and the goblet of fire", "J.K. Rowling", "https://images-na.ssl-images-amazon.com/images/I/71ykU-RQ0nL._SY606_.jpg"));
@@ -82,14 +82,14 @@ public class FeaturedFragment extends Fragment {
         books.add(new Book("Harry Potter and the chamber of secrets", "J.K. Rowling", "https://hpmedia.bloomsbury.com/rep/s/9781408855904_309575.jpeg"));
         books.add(new Book("Harry Potter and the chamber of secrets", "J.K. Rowling", "https://hpmedia.bloomsbury.com/rep/s/9781408855904_309575.jpeg"));
 
-        ArrayList<Category> categories = new ArrayList<Category>() {{
-            this.add(new Category("Top charts", books));
-            this.add(new Category("New titles", books));
-            this.add(new Category("Most popular", books));
-            this.add(new Category("Most popular1", books));
-            this.add(new Category("Most popular2", books));
-            this.add(new Category("Most popular2", books));
-            this.add(new Category("Most popular2", books));
+        ArrayList<FeaturedList> categories = new ArrayList<FeaturedList>() {{
+            this.add(new FeaturedList("Top charts", books));
+            this.add(new FeaturedList("New titles", books));
+            this.add(new FeaturedList("Most popular", books));
+            this.add(new FeaturedList("Most popular1", books));
+            this.add(new FeaturedList("Most popular2", books));
+            this.add(new FeaturedList("Most popular2", books));
+            this.add(new FeaturedList("Most popular2", books));
         }};
         return categories;
     }
