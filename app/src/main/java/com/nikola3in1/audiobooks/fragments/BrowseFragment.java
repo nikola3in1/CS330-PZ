@@ -8,9 +8,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.nikola3in1.audiobooks.R;
@@ -26,20 +28,30 @@ public class BrowseFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(TITLE);
+
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_browse, container, false);
-        // Fetch data from backend ...
-        ArrayList<Category> categories = getTestData();
-        initCategories(contentView,categories);
+        ArrayList<Category> categories;
+        Bundle args = getArguments();
+
+        if (args != null && args.get("categories") != null) {
+            // Subcategories, args passed from BrowseFragmentAdapter,
+            // from onClick event
+            categories = (ArrayList<Category>) args.get("categories");
+        } else {
+            // Categories, Fetch data from backend ...
+            categories = getTestData();
+        }
+        initCategories(contentView, categories);
         return contentView;
     }
 
     private ArrayList<Category> getTestData() {
-        return new ArrayList<Category>(){{
+        return new ArrayList<Category>() {{
             this.add(new Category("Drama", "https://static7.depositphotos.com/1002238/754/v/450/depositphotos_7544717-stock-illustration-comedy-and-tragedy-theater-masks.jpg"));
             this.add(new Category("Comedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
             this.add(new Category("Comedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
@@ -64,7 +76,7 @@ public class BrowseFragment extends Fragment {
         RecyclerView recyclerView = new RecyclerView(ctx);
         recyclerView.setLayoutParams(new LinearLayout.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT));
         recyclerView.setLayoutManager(layoutManager);
-        BrowseFragmentAdapter adapter = new BrowseFragmentAdapter(ctx,categories);
+        BrowseFragmentAdapter adapter = new BrowseFragmentAdapter(ctx, categories);
         recyclerView.setAdapter(adapter);
 
         // Insert into ScrollView
