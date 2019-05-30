@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.nikola3in1.audiobooks.MainActivity;
 import com.nikola3in1.audiobooks.R;
 import com.nikola3in1.audiobooks.service.APIClient;
 import com.nikola3in1.audiobooks.service.AuthService;
