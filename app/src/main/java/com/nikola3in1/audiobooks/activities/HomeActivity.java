@@ -1,15 +1,10 @@
 package com.nikola3in1.audiobooks.activities;
 
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
@@ -19,12 +14,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.WindowManager;
 
 import com.nikola3in1.audiobooks.R;
-import com.nikola3in1.audiobooks.fragments.BrowseFragment;
-import com.nikola3in1.audiobooks.fragments.FeaturedFragment;
-import com.nikola3in1.audiobooks.fragments.MyBooksFragment;
+import com.nikola3in1.audiobooks.fragments.menu.BrowseFragment;
+import com.nikola3in1.audiobooks.fragments.menu.FeaturedFragment;
+import com.nikola3in1.audiobooks.fragments.menu.MyBooksFragment;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -48,7 +42,7 @@ public class HomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //Set first fragment
-        displaySelectedFragment(new FeaturedFragment());
+        displayFragment(new FeaturedFragment());
 
         //Set color
         drawer.setScrimColor(Color.TRANSPARENT);
@@ -62,13 +56,13 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
         if (id == R.id.nav_featured) {
             // Handle the camera action
-            displaySelectedFragment( new FeaturedFragment());
+            displayFragment(new FeaturedFragment());
             System.out.println("nav_featured");
         } else if (id == R.id.nav_browse) {
-            displaySelectedFragment(new BrowseFragment());
+            displayFragment(new BrowseFragment());
             System.out.println("nav_browse");
         } else if (id == R.id.nav_my_books) {
-            displaySelectedFragment(new MyBooksFragment());
+            displayFragment(new MyBooksFragment());
             System.out.println("nav_my_books");
 
         } else if (id == R.id.nav_settings) {
@@ -80,16 +74,9 @@ public class HomeActivity extends AppCompatActivity
         return true;
     }
 
-    public static void displaySelectedFragment(Fragment fragment) {
-//        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//        fragmentTransaction.replace(R.id.frame, fragment);
-//        fragmentTransaction.commit();
-
-        System.out.println("CALLED displayFragment CAOOOO");
-        System.out.println("ARGS: " +fragment.getArguments());
-        System.out.println("FRAGMENT MANAGER: "+fragmentManager);
+    public static void displayFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame, fragment);
+        fragmentTransaction.replace(R.id.frame, fragment).addToBackStack("tag");
         fragmentTransaction.commit();
     }
 
