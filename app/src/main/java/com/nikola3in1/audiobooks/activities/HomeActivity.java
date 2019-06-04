@@ -66,7 +66,11 @@ public class HomeActivity extends AppCompatActivity
             System.out.println("nav_my_books");
 
         } else if (id == R.id.nav_settings) {
-
+            try {
+                throw new Exception("NOT IMPLEMENTED YET");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

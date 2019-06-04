@@ -1,6 +1,7 @@
 package com.nikola3in1.audiobooks.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.nikola3in1.audiobooks.R;
+import com.nikola3in1.audiobooks.activities.HomeActivity;
+import com.nikola3in1.audiobooks.fragments.BookFragment;
 import com.nikola3in1.audiobooks.model.Book;
 
 import java.util.ArrayList;
@@ -51,9 +54,17 @@ public class FeaturedFragmentAdapter extends RecyclerView.Adapter<FeaturedFragme
         viewHolder.author.setText(book.getAuthor());
         viewHolder.title.setText(book.getTitle());
         viewHolder.image.setOnClickListener((e)->{
-            Log.d(TAG, "onClick : clicked on an image"+ book.getTitle());
-            Toast.makeText(context,  book.getTitle(),Toast.LENGTH_SHORT);
+            Log.d(TAG, "onClick : clicked on an image" + book.getTitle());
+            displayBookFragment(book);
         });
+    }
+
+    private void displayBookFragment(Book book){
+        Bundle categoriesData = new Bundle();
+        categoriesData.putSerializable("book", book);
+        BookFragment bookFragment = new BookFragment();
+        bookFragment.setArguments(categoriesData);
+        HomeActivity.displayFragment(bookFragment);
     }
 
     @Override

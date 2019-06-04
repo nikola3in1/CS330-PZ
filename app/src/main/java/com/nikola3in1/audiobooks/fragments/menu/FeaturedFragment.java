@@ -50,8 +50,14 @@ public class FeaturedFragment extends Fragment {
             v.setLayoutParams(new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT));
             v.setOrientation(LinearLayout.VERTICAL);
 
-            //FeaturedList name
+            // FeaturedList name
             TextView txt = new TextView(ctx);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(20, 20, 2, 2);
+            txt.setLayoutParams(params);
             txt.setText(c.getName());
             txt.setTextSize(24);
 

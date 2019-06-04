@@ -1,6 +1,8 @@
 package com.nikola3in1.audiobooks.model;
 
-public class Book{
+import java.io.Serializable;
+
+public class Book implements Serializable {
     private String title;
     private String author;
     private String imageUrl;

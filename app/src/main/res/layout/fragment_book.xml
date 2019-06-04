@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!--Background-->
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="220dp"
+                android:background="@drawable/background1"
+                />
+
+            <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/card_view_outer"
+                android:layout_width="205dp"
+                android:layout_height="255dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="100dp"
+                card_view:cardBackgroundColor="@android:color/transparent"
+                card_view:cardCornerRadius="10dp"
+                card_view:cardElevation="3dp">
+
+                <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/card_view_inner"
+                    android:layout_width="200dp"
+                    android:layout_height="250dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="2dp"
+                    card_view:cardBackgroundColor="#090"
+                    card_view:cardCornerRadius="10dp"
+                    card_view:cardElevation="0dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:id="@+id/book_details_img"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"></ImageView>
+
+                        <!--Rating stars-->
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="22dp"
+                            android:layout_alignParentBottom="true"
+                            android:background="@color/colorPrimary">
+
+                            <TextView
+                                android:id="@+id/book_details_ratings_number"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginLeft="8dp"
+                                android:text="1143 Ratings"
+                                android:textColor="@android:color/background_light"
+                                android:textSize="13sp" />
+
+                            <RatingBar
+                                android:id="@+id/book_details_rating_stars"
+                                style="?android:attr/ratingBarStyleSmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginRight="8dp"
+                                android:numStars="5"
+                                android:progressTint="@android:color/background_light"
+                                android:rating="1"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+
+                        </RelativeLayout>
+
+
+                    </RelativeLayout>
+
+
+                </android.support.v7.widget.CardView>
+            </android.support.v7.widget.CardView>
+
+            <!--Book title-->
+            <TextView
+                android:id="@+id/book_details_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/card_view_outer"
+                android:text="Harry Potter and blah blah blah"
+                android:textAlignment="center"
+                android:textColor="@android:color/background_dark"
+                android:textSize="23sp" />
+        </RelativeLayout>
+
+        <!--Author-->
+        <TextView
+            android:id="@+id/book_details_author"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_weight="5"
+            android:text="Author: J.k.Rowling"
+            android:textAlignment="center"
+            android:textSize="16sp" />
+
+        <!--Narator-->
+        <TextView
+            android:id="@+id/book_details_readby"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_weight="5"
+            android:text="Read by: Nikola Pujic"
+            android:textAlignment="center"
+            android:textSize="16sp" />
+
+        <!--Released-->
+        <TextView
+            android:id="@+id/book_details_realesed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="5"
+            android:text="Released: Jan 15 2019"
+            android:textAlignment="center"
+            android:textSize="16sp" />
+
+        <!--Length-->
+        <TextView
+            android:id="@+id/book_details_length"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_weight="5"
+            android:text="4 hours 55 minutes"
+            android:textAlignment="center"
+            android:textSize="16sp" />
+
+        <!--Play button tooltip-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:text="Listen this book now!" />
+
+        <!--Play button-->
+        <LinearLayout
+            android:id="@+id/book_details_play"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/colorPrimary"
+                android:src="@android:drawable/ic_media_play" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="Play!"
+                android:textAlignment="center"
+                android:textColor="@android:color/background_light" />
+        </LinearLayout>
+
+        <!--Description-->
+        <TextView
+            android:id="@+id/book_details_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="14dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/lorem_ipsum" />
+
+        <!--ADD COMMENTS HERE-->
+        <!--ADD TAGS HERE-->
+    </LinearLayout>
+</ScrollView>
+
+
+
