@@ -2,12 +2,7 @@ package com.nikola3in1.audiobooks.fragments;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.renderscript.Allocation;
-import android.renderscript.Element;
-import android.renderscript.RenderScript;
-import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,20 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.nikola3in1.audiobooks.R;
 import com.nikola3in1.audiobooks.model.Book;
-
-import java.security.MessageDigest;
-
-import jp.wasabeef.blurry.Blurry;
-
-import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 public class BookFragment extends Fragment {
 
