@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 
 import com.nikola3in1.audiobooks.R;
 import com.nikola3in1.audiobooks.adapters.BrowseFragmentAdapter;
+import com.nikola3in1.audiobooks.model.DummyData;
 import com.nikola3in1.audiobooks.model.Category;
 
 import java.util.ArrayList;
@@ -47,10 +48,10 @@ public class BrowseFragment extends Fragment {
             isSubcategory = true;
             String parentCategory = (String) args.get("subcategoriesOf");
             Log.d(TAG,"Getting subcategories of " + parentCategory);
-            categories = getSubcategoriesTestData();
+            categories = DummyData.getSubcategoriesTestData();
         } else {
             // Categories, Fetch data from backend ...
-            categories = getCategoriesTestData();
+            categories = DummyData.getCategoriesTestData();
         }
         initCategories(contentView, categories);
         return contentView;
@@ -81,46 +82,5 @@ public class BrowseFragment extends Fragment {
     }
 
 
-    /* Dummy test data */
-    // Categories
-    private ArrayList<Category> getCategoriesTestData() {
-        return new ArrayList<Category>() {{
-            this.add(new Category("Drama", "https://static7.depositphotos.com/1002238/754/v/450/depositphotos_7544717-stock-illustration-comedy-and-tragedy-theater-masks.jpg"));
-            this.add(new Category("Comedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("Comedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("Comedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("Comedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("Comedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("Comedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("Comedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("Comedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("Comedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("Comedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("Comedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-        }};
-    }
 
-    // Subcategories
-    private ArrayList<Category> getSubcategoriesTestData() {
-        return new ArrayList<Category>() {{
-            this.add(new Category("SubDrama", "https://static7.depositphotos.com/1002238/754/v/450/depositphotos_7544717-stock-illustration-comedy-and-tragedy-theater-masks.jpg"));
-            this.add(new Category("SubComedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("SubComedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("SubComedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("SubComedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("SubComedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("SubComedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("SubComedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("SubComedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("SubComedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("SubComedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("SubComedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("SubComedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("SubComedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("SubComedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("SubComedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("SubComedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-            this.add(new Category("SubComedy", "http://res.freestockphotos.biz/pictures/5/5065-illustration-of-funny-novelty-glasses-pv.png"));
-        }};
-    }
 }

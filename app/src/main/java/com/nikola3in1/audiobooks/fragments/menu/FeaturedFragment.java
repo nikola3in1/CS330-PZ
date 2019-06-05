@@ -16,32 +16,35 @@ import android.widget.TextView;
 
 import com.nikola3in1.audiobooks.R;
 import com.nikola3in1.audiobooks.adapters.FeaturedFragmentAdapter;
-import com.nikola3in1.audiobooks.model.Book;
+import com.nikola3in1.audiobooks.model.DummyData;
 import com.nikola3in1.audiobooks.model.FeaturedList;
 
 import java.util.ArrayList;
 
 public class FeaturedFragment extends Fragment {
     private final String TITLE = "Featured";
-
+    private Context ctx;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(TITLE);
+        ctx = getActivity().getApplicationContext();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_featured, container, false);
+
         // Fetch data from backend ...
-        ArrayList<FeaturedList> categories = getTestData();
-        initFeaturedLists(contentView,categories);
+//        container.addView(contentView);
+//        container.addView(footerView);
+        ArrayList<FeaturedList> categories = DummyData.getFeaturedTestData();
+        initFeaturedLists(contentView, categories);
         return contentView;
     }
 
     private void initFeaturedLists(View contentView, ArrayList<FeaturedList> categories) {
-        Context ctx = getActivity().getApplicationContext();
 
         // Add Categories to home page
         for (FeaturedList c : categories) {
@@ -79,24 +82,5 @@ public class FeaturedFragment extends Fragment {
         }
     }
 
-    // TEST DATA
-    ArrayList<FeaturedList> getTestData() {
-        ArrayList<Book> books = new ArrayList<>();
-        books.add(new Book("Harry Potter and the sorcerers stone", "J.K. Rowling", "https://images-na.ssl-images-amazon.com/images/I/51HSkTKlauL._SX346_BO1,204,203,200_.jpg"));
-        books.add(new Book("Harry Potter and the goblet of fire", "J.K. Rowling", "https://images-na.ssl-images-amazon.com/images/I/71ykU-RQ0nL._SY606_.jpg"));
-        books.add(new Book("Harry Potter and the chamber of secrets", "J.K. Rowling", "https://hpmedia.bloomsbury.com/rep/s/9781408855904_309575.jpeg"));
-        books.add(new Book("Harry Potter and the chamber of secrets", "J.K. Rowling", "https://hpmedia.bloomsbury.com/rep/s/9781408855904_309575.jpeg"));
-        books.add(new Book("Harry Potter and the chamber of secrets", "J.K. Rowling", "https://hpmedia.bloomsbury.com/rep/s/9781408855904_309575.jpeg"));
 
-        ArrayList<FeaturedList> categories = new ArrayList<FeaturedList>() {{
-            this.add(new FeaturedList("Top charts", books));
-            this.add(new FeaturedList("New titles", books));
-            this.add(new FeaturedList("Most popular", books));
-            this.add(new FeaturedList("Most popular1", books));
-            this.add(new FeaturedList("Most popular2", books));
-            this.add(new FeaturedList("Most popular2", books));
-            this.add(new FeaturedList("Most popular2", books));
-        }};
-        return categories;
-    }
 }

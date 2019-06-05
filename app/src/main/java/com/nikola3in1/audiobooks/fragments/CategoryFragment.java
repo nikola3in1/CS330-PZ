@@ -1,4 +1,4 @@
-package com.nikola3in1.audiobooks.fragments.categories;
+package com.nikola3in1.audiobooks.fragments;
 
 import android.app.ActionBar;
 import android.content.Context;
@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 
 import com.nikola3in1.audiobooks.R;
 import com.nikola3in1.audiobooks.adapters.CategoryFragmentAdapter;
+import com.nikola3in1.audiobooks.model.DummyData;
 import com.nikola3in1.audiobooks.model.Book;
 
 import java.util.ArrayList;
@@ -40,13 +41,11 @@ public class CategoryFragment extends Fragment {
         ArrayList<Book> books;
 
         // Fetch data from backend...
-        books = getTestData();
+        books = DummyData.getBooks();
 
         initBooks(contentView,books);
         return contentView;
     }
-
-
 
     private void initBooks(View contentView, ArrayList<Book> books) {
         Context ctx = getActivity().getApplicationContext();
@@ -62,17 +61,5 @@ public class CategoryFragment extends Fragment {
         // Insert into ScrollView
         ViewGroup insertPoint = contentView.findViewById(R.id.browse_books_layout);
         insertPoint.addView(recyclerView, -1, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-    }
-
-    // TEST DATA
-    ArrayList<Book> getTestData() {
-        ArrayList<Book> books = new ArrayList<>();
-        books.add(new Book("Harry Potter and the sorcerers stone", "J.K. Rowling", "https://images-na.ssl-images-amazon.com/images/I/51HSkTKlauL._SX346_BO1,204,203,200_.jpg"));
-        books.add(new Book("Harry Potter and the sorcerers stone", "J.K. Rowling", "https://images-na.ssl-images-amazon.com/images/I/51HSkTKlauL._SX346_BO1,204,203,200_.jpg"));
-        books.add(new Book("Harry Potter and the goblet of fire", "J.K. Rowling", "https://images-na.ssl-images-amazon.com/images/I/71ykU-RQ0nL._SY606_.jpg"));
-        books.add(new Book("Harry Potter and the chamber of secrets", "J.K. Rowling", "https://hpmedia.bloomsbury.com/rep/s/9781408855904_309575.jpeg"));
-        books.add(new Book("Harry Potter and the chamber of secrets", "J.K. Rowling", "https://hpmedia.bloomsbury.com/rep/s/9781408855904_309575.jpeg"));
-        books.add(new Book("Harry Potter and the chamber of secrets", "J.K. Rowling", "https://hpmedia.bloomsbury.com/rep/s/9781408855904_309575.jpeg"));
-        return books;
     }
 }

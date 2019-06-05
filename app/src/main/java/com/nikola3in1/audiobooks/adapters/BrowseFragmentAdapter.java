@@ -10,12 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.nikola3in1.audiobooks.R;
 import com.nikola3in1.audiobooks.activities.HomeActivity;
-import com.nikola3in1.audiobooks.fragments.categories.CategoryFragment;
+import com.nikola3in1.audiobooks.fragments.CategoryFragment;
 import com.nikola3in1.audiobooks.fragments.menu.BrowseFragment;
 import com.nikola3in1.audiobooks.model.Category;
 

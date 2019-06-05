@@ -15,7 +15,6 @@ import com.bumptech.glide.Glide;
 import com.nikola3in1.audiobooks.R;
 import com.nikola3in1.audiobooks.activities.HomeActivity;
 import com.nikola3in1.audiobooks.fragments.BookFragment;
-import com.nikola3in1.audiobooks.fragments.categories.CategoryFragment;
 import com.nikola3in1.audiobooks.model.Book;
 
 import java.util.ArrayList;
