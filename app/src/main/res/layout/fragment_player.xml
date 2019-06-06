@@ -1,132 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginTop="25dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <!--footer-->
+    <include layout="@layout/fragment_footer_player"/>
+
+    <!--Colapsed-->
+    <ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <!--Background-->
-            <View
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="261dp"
-                android:background="@drawable/background1" />
+                android:layout_height="wrap_content">
 
-            <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/card_view_outer"
-                android:layout_width="205dp"
-                android:layout_height="255dp"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginTop="100dp"
-                card_view:cardBackgroundColor="@android:color/transparent"
-                card_view:cardCornerRadius="10dp"
-                card_view:cardElevation="3dp">
+                <!--Background-->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="261dp"
+                    android:background="@drawable/background1" />
 
-                <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/card_view_inner"
-                    android:layout_width="200dp"
-                    android:layout_height="250dp"
+                <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/card_view_outer"
+                    android:layout_width="205dp"
+                    android:layout_height="255dp"
+                    android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:layout_marginTop="2dp"
-                    card_view:cardBackgroundColor="#090"
+                    android:layout_marginTop="100dp"
+                    card_view:cardBackgroundColor="@android:color/transparent"
                     card_view:cardCornerRadius="10dp"
-                    card_view:cardElevation="0dp">
+                    card_view:cardElevation="3dp">
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/card_view_inner"
+                        android:layout_width="200dp"
+                        android:layout_height="250dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="2dp"
+                        card_view:cardBackgroundColor="#090"
+                        card_view:cardCornerRadius="10dp"
+                        card_view:cardElevation="0dp">
 
-                        <ImageView
-                            android:id="@+id/book_details_img"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:scaleType="centerCrop"></ImageView>
-
-                        <!--Rating stars-->
                         <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="22dp"
-                            android:layout_alignParentBottom="true"
-                            android:background="@color/colorPrimary">
+                            android:layout_height="match_parent">
 
-                            <TextView
-                                android:id="@+id/book_details_ratings_number"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerVertical="true"
-                                android:layout_marginStart="8dp"
-                                android:layout_marginLeft="8dp"
-                                android:text="1143 Ratings"
-                                android:textColor="@android:color/background_light"
-                                android:textSize="13sp" />
+                            <ImageView
+                                android:id="@+id/book_details_img"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"></ImageView>
 
-                            <RatingBar
-                                android:id="@+id/book_details_rating_stars"
-                                style="?android:attr/ratingBarStyleSmall"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:layout_alignParentRight="true"
-                                android:layout_centerVertical="true"
-                                android:layout_marginEnd="8dp"
-                                android:layout_marginRight="8dp"
-                                android:numStars="5"
-                                android:progressTint="@android:color/background_light"
-                                android:rating="1"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                            <!--Rating stars-->
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="22dp"
+                                android:layout_alignParentBottom="true"
+                                android:background="@color/colorPrimary">
+
+                                <TextView
+                                    android:id="@+id/book_details_ratings_number"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginStart="8dp"
+                                    android:layout_marginLeft="8dp"
+                                    android:text="1143 Ratings"
+                                    android:textColor="@android:color/background_light"
+                                    android:textSize="13sp" />
+
+                                <RatingBar
+                                    android:id="@+id/book_details_rating_stars"
+                                    style="?android:attr/ratingBarStyleSmall"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_marginRight="8dp"
+                                    android:numStars="5"
+                                    android:progressTint="@android:color/background_light"
+                                    android:rating="1"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                            </RelativeLayout>
 
 
                         </RelativeLayout>
 
 
-                    </RelativeLayout>
-
-
+                    </android.support.v7.widget.CardView>
                 </android.support.v7.widget.CardView>
-            </android.support.v7.widget.CardView>
 
-            <!--Book title-->
-            <TextView
-                android:id="@+id/book_details_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/card_view_outer"
-                android:text="Harry Potter and blah blah blah"
-                android:textAlignment="center"
-                android:textColor="@android:color/background_dark"
-                android:textSize="23sp" />
-        </RelativeLayout>
+                <!--Book title-->
+                <TextView
+                    android:id="@+id/book_details_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/card_view_outer"
+                    android:text="Harry Potter and blah blah blah"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/background_dark"
+                    android:textSize="23sp" />
+            </RelativeLayout>
 
-        <!--Author-->
+            <!--Author-->
 
-        <!--Narator-->
+            <!--Narator-->
 
-        <!--Released-->
+            <!--Released-->
 
-        <!--Length-->
+            <!--Length-->
 
-        <!--Play button tooltip-->
+            <!--Play button tooltip-->
 
-        <!--Play button-->
+            <!--Play button-->
 
-        <!--Description-->
+            <!--Description-->
 
-        <!--ADD COMMENTS HERE-->
-        <!--ADD TAGS HERE-->
-    </LinearLayout>
-</ScrollView>
+            <!--ADD COMMENTS HERE-->
+            <!--ADD TAGS HERE-->
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
+
 
 
 
