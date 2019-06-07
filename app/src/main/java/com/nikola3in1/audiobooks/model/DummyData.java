@@ -76,6 +76,25 @@ public class DummyData {
         book.setRating(4.8);
         book.setRatingsNumber(1230);
 
+        Chunk chunk1 = new Chunk("http://www.dkcmajdan.org.rs/data/audio_bajke/1.uvod.mp3");
+//        Chunk chunk1 = new Chunk("https://www.w3schools.com/html/horse.ogg");
+        Chunk chunk2 = new Chunk("http://www.dkcmajdan.org.rs/data/audio_bajke/2.zlatna_jabuka_i_devet_paunica.mp3");
+//        Chunk chunk2 = new Chunk("https://www.w3schools.com/html/horse.ogg");
+        Chunk chunk3 = new Chunk("https://www.w3schools.com/html/horse.ogg");
+
+        ArrayList<Chunk> chunks = new ArrayList<Chunk>() {{
+            this.add(chunk3);
+            this.add(chunk3);
+            this.add(chunk1);
+            this.add(chunk3);
+            this.add(chunk2);
+        }};
+
+        ArrayList<Chapter> chapters = new ArrayList<Chapter>() {{
+            this.add(new Chapter("Prvi chapter", chunks));
+        }};
+        book.setChapters(chapters);
+
         books.add(book);
         books.add(book);
         books.add(book);

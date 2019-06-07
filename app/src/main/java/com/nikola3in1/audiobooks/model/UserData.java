@@ -27,11 +27,11 @@ public class UserData {
         save(ctx);
     }
 
-    public static void remove(Context ctx, String key) {
+    private static void remove(Context ctx, String key) {
         data.remove(key);
     }
 
-    public static void put(Context ctx, String key, Object value) {
+    private static void put(Context ctx, String key, Object value) {
         data.put(key, value);
         save(ctx);
     }
@@ -58,7 +58,7 @@ public class UserData {
         return data;
     }
 
-    public static boolean save(Context ctx) {
+    private static boolean save(Context ctx) {
         File file = new File(ctx.getFilesDir(), DATA_FILE_NAME);
         try {
             ObjectOutput out = new ObjectOutputStream(new FileOutputStream(file));

@@ -2,6 +2,7 @@ package com.nikola3in1.audiobooks.model;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
 
 public class Book implements Serializable {
     private String title;
@@ -13,6 +14,19 @@ public class Book implements Serializable {
     private Date releasedDate;
     private String description;
     private Integer duration;
+
+    // UserData
+    ArrayList<Chapter> chapters;
+
+    private Chunk lastPlayedChunk;
+
+    public Chunk getLastPlayedChunk() {
+        return lastPlayedChunk;
+    }
+
+    public void setLastPlayedChunk(Chunk lastPlayedChunk) {
+        this.lastPlayedChunk = lastPlayedChunk;
+    }
 
     public Book(String title, String author, String imageUrl) {
         this.title = title;
@@ -31,6 +45,14 @@ public class Book implements Serializable {
         this.releasedDate = releasedDate;
         this.description = description;
         this.duration = duration;
+    }
+
+    public ArrayList<Chapter> getChapters() {
+        return chapters;
+    }
+
+    public void setChapters(ArrayList<Chapter> chapters) {
+        this.chapters = chapters;
     }
 
     public Integer getRatingsNumber() {
@@ -117,6 +139,8 @@ public class Book implements Serializable {
                 ", releasedDate=" + releasedDate +
                 ", description='" + description + '\'' +
                 ", duration=" + duration +
+                ", chapters=" + chapters +
                 '}';
     }
 }
+
