@@ -5,6 +5,8 @@ import java.sql.Date;
 import java.util.ArrayList;
 
 public class Book implements Serializable {
+    public static final String BUNDLE = "BOOK";
+
     private String title;
     private String author;
     private String imageUrl;
@@ -15,18 +17,11 @@ public class Book implements Serializable {
     private String description;
     private Integer duration;
 
-    // UserData
-    ArrayList<Chapter> chapters;
+    private ArrayList<Chapter> chapters;
+    private Bookmark bookmark;
+    private boolean isFinished = false;
 
-    private Chunk lastPlayedChunk;
-
-    public Chunk getLastPlayedChunk() {
-        return lastPlayedChunk;
-    }
-
-    public void setLastPlayedChunk(Chunk lastPlayedChunk) {
-        this.lastPlayedChunk = lastPlayedChunk;
-    }
+    private Chapter lastPlayedChapter;
 
     public Book(String title, String author, String imageUrl) {
         this.title = title;
@@ -45,6 +40,22 @@ public class Book implements Serializable {
         this.releasedDate = releasedDate;
         this.description = description;
         this.duration = duration;
+    }
+
+    public Chapter getLastPlayedChapter() {
+        return lastPlayedChapter;
+    }
+
+    public void setLastPlayedChapter(Chapter lastPlayedChapter) {
+        this.lastPlayedChapter = lastPlayedChapter;
+    }
+
+    public boolean isFinished() {
+        return isFinished;
+    }
+
+    public void setFinished(boolean finished) {
+        isFinished = finished;
     }
 
     public ArrayList<Chapter> getChapters() {
@@ -127,6 +138,15 @@ public class Book implements Serializable {
         this.imageUrl = imageUrl;
     }
 
+    public Bookmark getBookmark() {
+        return bookmark;
+    }
+
+    public void setBookmark(Bookmark bookmark) {
+        this.bookmark = bookmark;
+
+    }
+
     @Override
     public String toString() {
         return "Book{" +
@@ -140,6 +160,7 @@ public class Book implements Serializable {
                 ", description='" + description + '\'' +
                 ", duration=" + duration +
                 ", chapters=" + chapters +
+                ", bookmark=" + bookmark +
                 '}';
     }
 }

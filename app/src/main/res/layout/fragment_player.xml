@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_marginTop="25dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="25dp"
     android:orientation="vertical">
 
     <!--footer-->
-    <include layout="@layout/fragment_footer_player"/>
+    <include layout="@layout/fragment_footer_player" />
 
     <!--Colapsed-->
     <ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -19,15 +19,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
-            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
                 <!--Background-->
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="261dp"
+                    android:layout_height="271dp"
                     android:background="@drawable/background1" />
 
                 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -57,7 +56,7 @@
                             android:layout_height="match_parent">
 
                             <ImageView
-                                android:id="@+id/book_details_img"
+                                android:id="@+id/player_img"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="centerCrop"></ImageView>
@@ -70,7 +69,7 @@
                                 android:background="@color/colorPrimary">
 
                                 <TextView
-                                    android:id="@+id/book_details_ratings_number"
+                                    android:id="@+id/player_ratings_number"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_centerVertical="true"
@@ -81,7 +80,7 @@
                                     android:textSize="13sp" />
 
                                 <RatingBar
-                                    android:id="@+id/book_details_rating_stars"
+                                    android:id="@+id/player_rating_stars"
                                     style="?android:attr/ratingBarStyleSmall"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -108,7 +107,7 @@
 
                 <!--Book title-->
                 <TextView
-                    android:id="@+id/book_details_title"
+                    android:id="@+id/player_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/card_view_outer"
@@ -117,11 +116,83 @@
                     android:textColor="@android:color/background_dark"
                     android:textSize="23sp" />
 
-                <Button
-                    android:id="@+id/player_play_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="PLAY"/>
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/player_chapter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Chapter 1: Blah blah blah"
+                android:textAlignment="center"
+                android:textSize="18sp" />
+
+            <SeekBar
+                android:id="@+id/player_seekbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="20dp"
+                android:thumb="@drawable/thumb"
+                />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/player_fast_backwards"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginStart="60dp"
+                    android:layout_marginLeft="60dp"
+                    android:background="@drawable/round_button"
+                    android:src="@android:drawable/ic_media_rew" />
+
+                <ImageButton
+                    android:id="@+id/player_play"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/round_button"
+                    android:src="@android:drawable/ic_media_play" />
+
+                <ImageButton
+                    android:id="@+id/player_fast_forward"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginEnd="60dp"
+                    android:layout_marginRight="60dp"
+                    android:background="@drawable/round_button"
+                    android:src="@android:drawable/ic_media_ff" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/player_bookmark"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@color/cardview_light_background"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bookmark" />
 
             </RelativeLayout>
 

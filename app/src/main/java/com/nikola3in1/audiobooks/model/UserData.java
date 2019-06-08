@@ -18,8 +18,31 @@ public class UserData {
     private final static String DATA_FILE_NAME = "appState.data";
     private static Map<String, Object> data;
 
-    public static Book getLastPlayedBook(Context ctx) {
+    public static UserPreferences getUserPreferences() {
+        return (UserPreferences) data.get(UserDataConstants.USER_PREFERENCES);
+    }
+
+    public static Book getLastPlayedBook() {
         return (Book) data.get(UserDataConstants.LAST_PLAYED_BOOK);
+    }
+
+    public static Map<Book,Chapter> getMyBooks() {
+        return (Map<Book,Chapter>) data.get(UserDataConstants.MY_BOOKS);
+    }
+
+    public static void setMyBooks(Context ctx){
+        data.put(UserDataConstants.MY_BOOKS, MyBookLibrary.myBooks);
+        save(ctx);
+    }
+
+    public static void setMyBooks(Context ctx, Map<Book,Chapter> myBooks){
+        data.put(UserDataConstants.MY_BOOKS, myBooks);
+        save(ctx);
+    }
+
+    public static void setUserPreferences(Context ctx, UserPreferences userPreferences) {
+        data.put(UserDataConstants.USER_PREFERENCES, userPreferences);
+        save(ctx);
     }
 
     public static void setLastPlayedBook(Context ctx, Book book) {
@@ -71,9 +94,15 @@ public class UserData {
         return false;
     }
 
+
+
+
     /* Defining constants that will be used as keys in userData map */
     private static class UserDataConstants{
         private static final String LAST_PLAYED_BOOK = "lastPlayedBook";
+        private static final String USER_PREFERENCES = "userPreferences";
+        private static final String MY_BOOKS = "myBooks";
+
 
     }
 

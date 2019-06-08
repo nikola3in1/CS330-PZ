@@ -1,6 +1,7 @@
 package com.nikola3in1.audiobooks.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,13 +21,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 import com.nikola3in1.audiobooks.R;
 import com.nikola3in1.audiobooks.model.Book;
-
-import org.w3c.dom.Text;
-
-import java.sql.Date;
-import java.text.DateFormat;
+import com.nikola3in1.audiobooks.util.PlayerEventConstants;
 
 import static com.android.volley.VolleyLog.TAG;
+import static com.nikola3in1.audiobooks.util.StringFormater.*;
 
 public class BookFragment extends Fragment {
 
@@ -64,6 +62,11 @@ public class BookFragment extends Fragment {
 
 
     private void playBook() {
+        Intent intent = new Intent("data");
+        intent.putExtra("event", PlayerEventConstants.PLAY_BOOK);
+        intent.putExtra(PlayerEventConstants.PLAY_BOOK, book);
+        System.out.println("FRAGMENT BOOK:"+book.getLastPlayedChapter());
+        ctx.sendBroadcast(intent);
     }
 
     private void initBook(View contentView) {
@@ -102,36 +105,6 @@ public class BookFragment extends Fragment {
 
     }
 
-    // Util methods for String formating
-    private float setStars(Double rating) {
-        Number n = rating;
-        return n.floatValue();
-    }
-    private String setRatingsNumber(Integer ratingsNumber) {
-        return ratingsNumber + " Ratings";
-    }
-    private String setDescription(String description) {
-        //Maybe add few \n on a paragraph which has more than 200 words?
-        return description;
-    }
-    private String setNarator(String narator) {
-        return "Read by: " + narator;
-    }
-    private String setAuthor(String author) {
-        return "Author: " + author;
-    }
-    private String setReleasedDate(Date releasedDate) {
-        return "Released: " + DateFormat.getDateInstance(DateFormat.MEDIUM).format(releasedDate);
-    }
-    private String setDuration(Integer seconds) {
-        Integer minutes = seconds / 60;
-        Integer hours = minutes / 60;
-        minutes = minutes % 60;
-        Integer trailingSec = seconds % 60;
-        if (trailingSec > 30) {
-            minutes++;
-        }
-        return hours + " hours " + minutes + " minutes ";
-    }
+
 
 }

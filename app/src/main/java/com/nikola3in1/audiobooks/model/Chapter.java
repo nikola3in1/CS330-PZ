@@ -1,25 +1,53 @@
 package com.nikola3in1.audiobooks.model;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class Chapter implements Serializable {
     private String name;
     private String about;
-    private List<Chunk> chunkURLs;
+    private String audioURL;
+
+    private Integer checkpoint=0;
 
     public Chapter() {
     }
 
-    public Chapter(String name, List<Chunk> chunkURLs) {
-        this.name = name;
-        this.chunkURLs = chunkURLs;
-    }
-
-    public Chapter(String name, String about, List<Chunk> chunkURLs) {
+    public Chapter(String name, String about, String audioURL) {
         this.name = name;
         this.about = about;
-        this.chunkURLs = chunkURLs;
+        this.audioURL = audioURL;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Chapter chapter = (Chapter) o;
+        return getName().equals(chapter.getName()) &&
+                getAbout().equals(chapter.getAbout()) &&
+                getAudioURL().equals(chapter.getAudioURL());
+    }
+
+    @Override
+    public int hashCode() {
+        String hash = getName() + getAbout() + getAudioURL();
+        return hash.hashCode();
+    }
+
+    public Integer getCheckpoint() {
+        return checkpoint;
+    }
+
+    public void setCheckpoint(Integer checkpoint) {
+        this.checkpoint = checkpoint;
+    }
+
+    public String getAudioURL() {
+        return audioURL;
+    }
+
+    public void setAudioURL(String audioURL) {
+        this.audioURL = audioURL;
     }
 
     public String getName() {
@@ -38,20 +66,11 @@ public class Chapter implements Serializable {
         this.about = about;
     }
 
-    public List<Chunk> getChunkURLs() {
-        return chunkURLs;
-    }
-
-    public void setChunkURLs(List<Chunk> chunkURLs) {
-        this.chunkURLs = chunkURLs;
-    }
-
     @Override
     public String toString() {
         return "Chapter{" +
                 "name='" + name + '\'' +
-                ", about='" + about + '\'' +
-                ", chunkURLs=" + chunkURLs +
+                ", checkpoint=" + checkpoint +
                 '}';
     }
 }
