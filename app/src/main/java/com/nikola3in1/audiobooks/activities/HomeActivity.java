@@ -1,5 +1,6 @@
 package com.nikola3in1.audiobooks.activities;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -23,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -39,14 +41,15 @@ import com.nikola3in1.audiobooks.fragments.menu.SettingsFragment;
 import com.nikola3in1.audiobooks.model.Book;
 import com.nikola3in1.audiobooks.model.Chapter;
 import com.nikola3in1.audiobooks.model.DummyData;
-import com.nikola3in1.audiobooks.model.MyBookLibrary;
+import com.nikola3in1.audiobooks.model.MyLibrary;
 import com.nikola3in1.audiobooks.model.UserData;
 import com.nikola3in1.audiobooks.model.UserPreferences;
 import com.nikola3in1.audiobooks.service.PlayerService;
 import com.nikola3in1.audiobooks.util.PlayerEventConstants;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.nikola3in1.audiobooks.util.StringFormater.setRatingsNumber;
 import static com.nikola3in1.audiobooks.util.StringFormater.setStars;
@@ -62,15 +65,19 @@ public class HomeActivity extends AppCompatActivity
     private SeekBar seekBar;
     private boolean seekBarLocked = false;
     private TextView chapterTextView;
+    private SlidingUpPanelLayout sliding;
 
     //User data
     private Book currentBook;
     private Chapter currentChapter;
+    private MyLibrary myLibrary;
     private UserPreferences userPreferences;
 
     //Service
     boolean mBounded;
+    private PlayerObserver playerObserver;
     public static PlayerService playerService;
+    private Thread playerObserverThread;
 
     private IntentFilter intentFilter;
 
@@ -93,6 +100,7 @@ public class HomeActivity extends AppCompatActivity
             Log.d("Service Con:", "Service is disconnected");
             mBounded = false;
             playerService = null;
+            stopObserver();
         }
 
         @Override
@@ -101,6 +109,12 @@ public class HomeActivity extends AppCompatActivity
             mBounded = true;
             PlayerService.LocalBinder mLocalBinder = (PlayerService.LocalBinder) service;
             playerService = mLocalBinder.getServerInstance();
+
+            if (currentBook != null) {
+                playerService.playBook(currentBook);
+                startObserver();
+            }
+            //Check for last progress
         }
     };
 
@@ -128,14 +142,15 @@ public class HomeActivity extends AppCompatActivity
                         }
                         break;
                     case PlayerEventConstants.CHAPTER:
-                        Chapter chapter = (Chapter) data.get(PlayerEventConstants.CHAPTER);
-                        if (chapter != null) {
-                            setCurrentChapter(chapter);
+                        Integer chapterPosition = (Integer) data.get(PlayerEventConstants.CHAPTER);
+                        System.out.println("RECIEVED CHAPTER POS " + chapterPosition);
+                        if (chapterPosition != null) {
+                            setCurrentChapter(chapterPosition);
                         }
                     case PlayerEventConstants.PLAY_BOOK:
                         Book book = (Book) data.get(PlayerEventConstants.PLAY_BOOK);
                         if (book != null) {
-                            System.out.println("PLAYING BOOK");
+                            System.out.println("PLAYING BOOK <------------");
                             playBook(book);
                         }
                         break;
@@ -150,6 +165,9 @@ public class HomeActivity extends AppCompatActivity
         this.ctx = this;
         setContentView(R.layout.activity_home);
 
+        sliding = findViewById(R.id.sliding_layout);
+        sliding.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+
         // Init UserData
         initUserData();
 //        testSavingBook();
@@ -161,7 +179,7 @@ public class HomeActivity extends AppCompatActivity
         initReciever();
 
         // Init player controller
-        setupPlayer();
+//        setupPlayer(currentBook);
 
         // Set first fragment
         fragmentManager = getSupportFragmentManager();
@@ -177,34 +195,30 @@ public class HomeActivity extends AppCompatActivity
         registerReceiver(receiver, intentFilter);
     }
 
-    private void initNavigation() {
-        // Initiates Navigation and Actionbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
-
-        // Remove navigation view shadow
-        drawer.setScrimColor(Color.TRANSPARENT);
-    }
 
     private void initUserData() {
         // Loads app state from internal storage
         UserData.load(this);
-//        MyBookLibrary.myBooks = UserData.getMyBooks();
-//        if (MyBookLibrary.myBooks == null) {
-//            UserData.setMyBooks(this, new HashMap<>());
-//        }
-//        System.out.println("AFTER INIT");
 
         this.currentBook = UserData.getLastPlayedBook();
+
+        if (currentBook.getLastPlayedChapter() == null) {
+            System.out.println("LAST PALYED IS NULL");
+            currentBook.setLastPlayedChapter(currentBook.getChapters().get(0));
+        }
+
+        System.out.println("LAST PLAYED BOOK" + currentBook);
+//        this.currentBook = null; // TESTING
         this.userPreferences = UserData.getUserPreferences();
-        this.currentChapter = currentBook.getLastPlayedChapter();
+        System.out.println("USER PREFS" + userPreferences);
+        this.myLibrary = UserData.getMyLibrary();
+
+        if (myLibrary == null) {
+            myLibrary = new MyLibrary();
+            UserData.setMyLibrary(this, myLibrary);
+            System.out.println("STIL NULL");
+        }
+//        this.currentChapter = currentBook.getLastPlayedChapter();
 
         System.out.println("LAST PLAYED BOOK:" + currentBook);
     }
@@ -216,92 +230,65 @@ public class HomeActivity extends AppCompatActivity
             System.out.println("USER PREFS:" + userPreferences);
             data.putSerializable(UserPreferences.BUNDLE, userPreferences);
         }
-
-//        if (MyBookLibrary.myBooks.containsKey(currentBook)) {
-//            System.out.println("CHECKING THE LIBRARY");
-//            Chapter lastPlayedChapter = MyBookLibrary.myBooks.get(currentBook);
-//            if (lastPlayedChapter != null) {
-//                // Setting last played chapter
-//                System.out.println("LAST CHAPTER:"+lastPlayedChapter);
-//                currentBook.setLastPlayedChapter(lastPlayedChapter);
-//            }else{
-//                System.out.println("FIRST CHAPTER");
-//                // If there is on last played chapter, we set first chapter
-//                Chapter firstChapter = currentBook.getChapters().get(0);
-//                currentBook.setLastPlayedChapter(firstChapter);
-//            }
-//        }else{
-//            Log.d("NOBOOK:", "NOOOOO BOOOOOOK");
-//            System.out.println("NO BOOK");
-//
-//        }
-
-        System.out.println("INIT SERVICE, LAST PLAYED CHAPTER: " + currentBook.getLastPlayedChapter());
-
+        //check my books library
         System.out.println("INIT PLAYER SERVICE:" + currentBook);
         Intent mIntent = new Intent(this, PlayerService.class);
         mIntent.putExtras(data);
         bindService(mIntent, mConnection, BIND_AUTO_CREATE);
         startService(mIntent);
+
+        if (currentBook != null) {
+            System.out.println("PLAY CURRENT BOOK");
+            playBook(currentBook);
+            sliding.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        }
     }
 
     private void playBook(Book book) {
+        System.out.println("SETUP PLAYER");
+        // Populate player layout
+
+        myLibrary.addBook(this, book);
+
+        System.out.println(Arrays.toString(myLibrary.getBooks().toArray()));
+
         currentBook = book;
 
-//        if (MyBookLibrary.myBooks.containsKey(currentBook)) {
-//            System.out.println("CHECKING THE LIBRARY");
-//            Chapter lastPlayedChapter = MyBookLibrary.myBooks.get(currentBook);
-//            if (lastPlayedChapter != null) {
-//                // Setting last played chapter
-//                System.out.println("LAST CHAPTER:" + lastPlayedChapter);
-//                currentBook.setLastPlayedChapter(lastPlayedChapter);
-//            } else {
-//                System.out.println("FIRST CHAPTER");
-//                // If there is on last played chapter, we set first chapter
-//                Chapter firstChapter = currentBook.getChapters().get(0);
-//                currentBook.setLastPlayedChapter(firstChapter);
-//            }
-//        } else {
-//            Log.d("NOBOOK:", "NOOOOO BOOOOOOK");
-//            System.out.println("NO BOOK");
-//            Chapter first = currentBook.getChapters().get(0);
-//            currentBook.setLastPlayedChapter(first);
-//            MyBookLibrary.myBooks.put(currentBook, first);
-//        }
+        setupPlayer(book);
 
-
-        System.out.println("PLAY BOOK, LAST PLAYED CHAPTER: " + book.getLastPlayedChapter());
-        setupPlayer();
-
-        Bundle data = new Bundle();
-        data.putSerializable(Book.BUNDLE, book);
-        if (userPreferences != null) {
-            System.out.println("USER PREFS:" + userPreferences);
-            data.putSerializable(UserPreferences.BUNDLE, userPreferences);
+        if (playerObserver != null && !playerObserver.stop.get()) {
+            System.out.println("STOPING OBSERVER");
+            stopObserver();
         }
-        Intent mIntent = new Intent(this, PlayerService.class);
-        mIntent.putExtras(data);
-//        bindService(mIntent, mConnection, BIND_AUTO_CREATE);
-        playerService.stopObserver();
-        stopService(mIntent);
-        startService(mIntent);
+        if (playerService != null) {
+            System.out.println("SETTING NEW BOOK");
+            getPlayerService().playBook(book);
+            startObserver();
+        }
+
+        System.out.println("PLAYBOOK :" + book);
+
     }
 
-    private void setupPlayer() {
-        SlidingUpPanelLayout sliding = findViewById(R.id.sliding_layout);
+    private void setupPlayer(Book playedBook) {
+
         //Setting the footer height
-        sliding.setPanelHeight(143);
-
+        System.out.println("SETTING UP PLAYER");
         footerPlayer = findViewById(R.id.footer_player);
+        sliding.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
 
-        if (currentBook == null) {
+        if (playedBook == null) {
             footerPlayer.setVisibility(View.GONE);
+//            sliding.setVisibility(View.GONE);
+            System.out.println("EXIT FUCKIN THING");
             return;
         }
+        System.out.println("PLAYED BOOK " + playedBook);
+
+        sliding.setPanelHeight(143);
 
         // Setting footer data
-        footerPlayer.setVisibility(View.VISIBLE);
-        setFooterData(currentBook.getImageUrl(), currentBook.getTitle(), currentBook.getAuthor());
+        setFooterData(playedBook.getImageUrl(), playedBook.getTitle(), playedBook.getAuthor());
 
         // Setting button listeners
         ImageButton footerPlayBtn = findViewById(R.id.footer_player_play);
@@ -316,22 +303,22 @@ public class HomeActivity extends AppCompatActivity
 
         // Title
         TextView title = findViewById(R.id.player_title);
-        title.setText(currentBook.getTitle());
+        title.setText(playedBook.getTitle());
 
         // Image
         ImageView image = findViewById(R.id.player_img);
         Glide.with(this)
                 .asBitmap().
-                load(currentBook.getImageUrl()).
+                load(playedBook.getImageUrl()).
                 into(image);
 
         // Number of ratings
         TextView nrRatings = findViewById(R.id.player_ratings_number);
-        nrRatings.setText(setRatingsNumber(currentBook.getRatingsNumber()));
+        nrRatings.setText(setRatingsNumber(playedBook.getRatingsNumber()));
 
         // Number of stars
         RatingBar rating = findViewById(R.id.player_rating_stars);
-        rating.setRating(setStars(currentBook.getRating()));
+        rating.setRating(setStars(playedBook.getRating()));
 
         // Seekbar init
         seekBar = findViewById(R.id.player_seekbar);
@@ -358,13 +345,18 @@ public class HomeActivity extends AppCompatActivity
 
         // Chapter
         chapterTextView = findViewById(R.id.player_chapter);
-        setCurrentChapter(currentBook.getLastPlayedChapter());
+
+        //TESTING
+//        setCurrentChapter(playedBook);
 
 //        Bookmark
         ImageButton bookmarkBtn = findViewById(R.id.player_bookmark);
         bookmarkBtn.setOnClickListener((e) -> {
             Toast.makeText(this, "Bookmarks!? Coming up in next update!", Toast.LENGTH_SHORT).show();
         });
+
+        System.out.println("BOOK IS SET " + playedBook.getLastPlayedChapter());
+
 
     }
 
@@ -392,32 +384,60 @@ public class HomeActivity extends AppCompatActivity
     }
 
     /* BroadcastReciever events */
-    private void setCurrentChapter(Chapter chapter) {
+    private void setCurrentChapter(Book book) {
+        // Only called on init - setupPlayer
+
+        Chapter chapter;
+        if (book.getLastPlayedChapter() != null) {
+            chapter = book.getLastPlayedChapter();
+        } else {
+            chapter = book.getChapters().get(0);
+        }
         System.out.println("SETTING CHAPTER NAME: " + chapter.getName());
-        currentChapter = chapter;
-        int chapterNr = currentBook.getChapters().indexOf(chapter) + 1;
+        int chapterNr = book.getChapters().indexOf(chapter) + 1;
         chapterTextView.setText("Chapter " + chapterNr + " - " + chapter.getName());
-
         // Save to memory
-        currentBook.setLastPlayedChapter(currentChapter);
-
-//        MyBookLibrary.myBooks.put(currentBook, currentBook.getLastPlayedChapter());
-//        UserData.setMyBooks(ctx);
-        UserData.setLastPlayedBook(ctx, currentBook);
+        book.setLastPlayedChapter(chapter);
+        UserData.setLastPlayedBook(ctx, book);
     }
+
+    private synchronized void setCurrentChapter(int chapterPosition) {
+        // Called from the update thread
+        if (chapterPosition >= 0) {
+            Chapter chapter = currentBook.getChapters().get(chapterPosition);
+
+            if (chapter != null) {
+                int chapterNr = chapterPosition + 1;
+                chapterTextView.setText("Chapter " + chapterNr + " - " + chapter.getName());
+                // Save to memory
+                System.out.println("setCurrentChapter: lastChapter" + currentBook.getLastPlayedChapter());
+                currentBook.setLastPlayedChapter(chapter);
+                UserData.setLastPlayedBook(ctx, currentBook);
+                System.out.println("setCurrentChapter: lastChapter 2" + currentBook.getLastPlayedChapter());
+
+            }
+        }
+
+    }
+
 
     private void setMaxProgressBar(Integer maxProgress) {
         System.out.println("SETTING MAX PROGRESS");
         seekBar.setMax(maxProgress);
     }
 
-    private void updateProgressBar(Integer progress) {
+    private synchronized void updateProgressBar(Integer progress) {
         if (!seekBarLocked) {
             seekBar.setProgress(progress);
-            currentChapter.setCheckpoint(progress);
-//            currentBook.getLastPlayedChapter().setCheckpoint(progress);
+
+            // Saving progress
+            Chapter lastPlayedChapter = currentBook.getLastPlayedChapter();
+            if (lastPlayedChapter != null) {
+                lastPlayedChapter.setCheckpoint(progress);
+                currentBook.setLastPlayedChapter(lastPlayedChapter);
+                UserData.setLastPlayedBook(this, currentBook);
+            }
         }
-//        System.out.println("UPDATE PROGRESS: "+progress);
     }
 
     private void bookIsFinished() {
@@ -426,7 +446,7 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void updatePlayButton(boolean isPaused) {
-        System.out.println("UPDATING BUTTON " + isPaused);
+        // Called from update thread
 
         ImageButton footerPlayButton = findViewById(R.id.footer_player_play);
         ImageButton playButton = findViewById(R.id.player_play);
@@ -440,6 +460,22 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
+    private void initNavigation() {
+        // Initiates Navigation and Actionbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+
+        // Remove navigation view shadow
+        drawer.setScrimColor(Color.TRANSPARENT);
+    }
+
     /* Life Cycle & Activity Events */
     @Override
     protected void onResume() {
@@ -451,6 +487,9 @@ public class HomeActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+
+        System.out.println("DESTROYED");
+        unbindService(mConnection);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -510,17 +549,11 @@ public class HomeActivity extends AppCompatActivity
     private class OnPlayButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Book updatedBook;
             if (playerService.isPlaying()) {
-                updatePlayButton(true);
-                updatedBook = playerService.pause();
+                playerService.pause();
             } else {
-                updatePlayButton(false);
-                updatedBook = playerService.play();
+                playerService.play();
             }
-//            System.out.println("LAST PLAYED CHAPTER CHECKPOINT" + currentBook.getLastPlayedChapter().getCheckpoint());
-            updatedBook.setLastPlayedChapter(currentChapter);
-            UserData.setLastPlayedBook(ctx, updatedBook);
         }
     }
 
@@ -537,6 +570,53 @@ public class HomeActivity extends AppCompatActivity
         @Override
         public void onClick(View v) {
             playerService.fastBackwards();
+        }
+    }
+
+
+    public synchronized static PlayerService getPlayerService() {
+        return playerService;
+    }
+
+    /* Player Observer */
+    private class PlayerObserver implements Runnable {
+        AtomicBoolean stop = new AtomicBoolean(false);
+
+        @Override
+        public void run() {
+            while (!stop.get()) {
+                int progress = getPlayerService().getCurrentPosition();
+                updateProgressBar(progress);
+
+                if (getPlayerService().isPlaying()) {
+                    updatePlayButton(false);
+                } else {
+                    updatePlayButton(true);
+                }
+
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+
+        public void stop() {
+            stop.set(true);
+        }
+    }
+
+    private void startObserver() {
+        playerObserver = new PlayerObserver();
+        playerObserverThread = new Thread(playerObserver);
+        playerObserverThread.start();
+    }
+
+    public void stopObserver() {
+        if (playerObserver != null) {
+            playerObserver.stop();
         }
     }
 

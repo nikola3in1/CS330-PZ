@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -36,6 +35,7 @@ public class SettingsFragment extends Fragment {
         // If there is no UserPreferences, init UserPreferences
         if (userPreferences == null) {
             userPreferences = new UserPreferences();
+            UserData.setUserPreferences(ctx,userPreferences);
         }
         radioGroup = contentView.findViewById(R.id.settings_radio_btn_group);
         initSettings();

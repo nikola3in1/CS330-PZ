@@ -24,6 +24,7 @@ import java.util.ArrayList;
 public class FeaturedFragment extends Fragment {
     private final String TITLE = "Featured";
     private Context ctx;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,8 +38,6 @@ public class FeaturedFragment extends Fragment {
         View contentView = inflater.inflate(R.layout.fragment_featured, container, false);
 
         // Fetch data from backend ...
-//        container.addView(contentView);
-//        container.addView(footerView);
         ArrayList<FeaturedList> categories = DummyData.getFeaturedTestData();
         initFeaturedLists(contentView, categories);
         return contentView;

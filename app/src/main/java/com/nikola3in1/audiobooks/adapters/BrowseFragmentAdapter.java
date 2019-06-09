@@ -37,15 +37,12 @@ public class BrowseFragmentAdapter extends RecyclerView.Adapter<BrowseFragmentAd
     @NonNull
     @Override
     public BrowseFragmentAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        Log.d(TAG, "onCreateViewHolder : called");
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_browse_categorylist, viewGroup, false);
         return new BrowseFragmentAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull BrowseFragmentAdapter.ViewHolder viewHolder, int i) {
-        Log.d(TAG, "onBindViewHolder : called");
-
         Category category = categories.get(i);
 
         Glide.with(context)
@@ -56,12 +53,10 @@ public class BrowseFragmentAdapter extends RecyclerView.Adapter<BrowseFragmentAd
         viewHolder.image.setOnClickListener((e) -> {
             if (isSubcategory) {
                 // Clicked on subcategory
-                Log.d(TAG, "onClick : clicked on a subcategory" + category.getTitle());
                 displayBooksFragment(category);
 
             }else{
                 // Clicked on category
-                Log.d(TAG, "onClick : clicked on a category" + category.getTitle());
                 displaySubcategoies(category);
             }
         });

@@ -3,6 +3,7 @@ package com.nikola3in1.audiobooks.model;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Book implements Serializable {
     public static final String BUNDLE = "BOOK";
@@ -40,6 +41,22 @@ public class Book implements Serializable {
         this.releasedDate = releasedDate;
         this.description = description;
         this.duration = duration;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return getTitle().equals(book.getTitle()) &&
+                getAuthor().equals(book.getAuthor()) &&
+                getImageUrl().equals(book.getImageUrl());
+
+    }
+
+    @Override
+    public int hashCode() {
+        return getTitle().hashCode() + getAuthor().hashCode();
     }
 
     public Chapter getLastPlayedChapter() {
@@ -152,15 +169,9 @@ public class Book implements Serializable {
         return "Book{" +
                 "title='" + title + '\'' +
                 ", author='" + author + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
-                ", ratingsNumber=" + ratingsNumber +
-                ", rating=" + rating +
-                ", narator='" + narator + '\'' +
-                ", releasedDate=" + releasedDate +
-                ", description='" + description + '\'' +
                 ", duration=" + duration +
                 ", chapters=" + chapters +
-                ", bookmark=" + bookmark +
+                ", lastPlayedChapter= "+lastPlayedChapter+
                 '}';
     }
 }

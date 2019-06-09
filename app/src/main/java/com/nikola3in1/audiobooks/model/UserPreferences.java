@@ -7,6 +7,9 @@ public class UserPreferences implements Serializable {
     // Value used for fast forwarding & rewinding
     private Integer mediaSkipValue = 10;
 
+    public UserPreferences() {
+    }
+
     public Integer getMediaSkipValue() {
         return mediaSkipValue;
     }

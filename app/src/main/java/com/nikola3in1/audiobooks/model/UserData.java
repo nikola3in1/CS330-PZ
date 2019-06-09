@@ -10,13 +10,24 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /* Internal storage management class */
 public class UserData {
     private final static String DATA_FILE_NAME = "appState.data";
     private static Map<String, Object> data;
+
+    public static MyLibrary getMyLibrary() {
+        return (MyLibrary) data.get(UserDataConstants.MY_LIBRARY);
+    }
+
+    public static void setMyLibrary(Context ctx, MyLibrary myLibrary) {
+        data.put(UserDataConstants.MY_LIBRARY, myLibrary);
+        save(ctx);
+    }
 
     public static UserPreferences getUserPreferences() {
         return (UserPreferences) data.get(UserDataConstants.USER_PREFERENCES);
@@ -24,20 +35,6 @@ public class UserData {
 
     public static Book getLastPlayedBook() {
         return (Book) data.get(UserDataConstants.LAST_PLAYED_BOOK);
-    }
-
-    public static Map<Book,Chapter> getMyBooks() {
-        return (Map<Book,Chapter>) data.get(UserDataConstants.MY_BOOKS);
-    }
-
-    public static void setMyBooks(Context ctx){
-        data.put(UserDataConstants.MY_BOOKS, MyBookLibrary.myBooks);
-        save(ctx);
-    }
-
-    public static void setMyBooks(Context ctx, Map<Book,Chapter> myBooks){
-        data.put(UserDataConstants.MY_BOOKS, myBooks);
-        save(ctx);
     }
 
     public static void setUserPreferences(Context ctx, UserPreferences userPreferences) {
@@ -95,15 +92,11 @@ public class UserData {
     }
 
 
-
-
     /* Defining constants that will be used as keys in userData map */
-    private static class UserDataConstants{
+    private static class UserDataConstants {
+        private static final String MY_LIBRARY = "myLibrary";
         private static final String LAST_PLAYED_BOOK = "lastPlayedBook";
         private static final String USER_PREFERENCES = "userPreferences";
-        private static final String MY_BOOKS = "myBooks";
-
-
     }
 
 }

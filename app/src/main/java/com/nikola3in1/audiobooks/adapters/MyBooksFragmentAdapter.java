@@ -4,13 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.nikola3in1.audiobooks.R;
@@ -20,15 +18,14 @@ import com.nikola3in1.audiobooks.model.Book;
 
 import java.util.ArrayList;
 
-import static android.support.constraint.Constraints.TAG;
 
-public class FeaturedFragmentAdapter extends RecyclerView.Adapter<FeaturedFragmentAdapter.ViewHolder>{
+public class MyBooksFragmentAdapter extends RecyclerView.Adapter<MyBooksFragmentAdapter.ViewHolder>{
 
     // Data
     private ArrayList<Book> books;
     private Context context;
 
-    public FeaturedFragmentAdapter(Context context, ArrayList<Book> books) {
+    public MyBooksFragmentAdapter(Context context, ArrayList<Book> books) {
         this.books = books;
         this.context = context;
     }
@@ -36,7 +33,7 @@ public class FeaturedFragmentAdapter extends RecyclerView.Adapter<FeaturedFragme
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_featured_booklist, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_mybooks_booklist, viewGroup, false);
         return new ViewHolder(view);
     }
 

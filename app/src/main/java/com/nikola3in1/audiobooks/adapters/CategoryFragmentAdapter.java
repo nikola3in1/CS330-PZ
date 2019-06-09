@@ -37,14 +37,12 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<CategoryFragme
     @NonNull
     @Override
     public CategoryFragmentAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        Log.d(TAG, "onCreateViewHolder : called");
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_category_booklist, viewGroup, false);
         return new CategoryFragmentAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CategoryFragmentAdapter.ViewHolder viewHolder, int i) {
-        Log.d(TAG, "onBindViewHolder : called");
 
         // Books which will be in same row
         ArrayList<Book> pair = bookPairs.get(i);

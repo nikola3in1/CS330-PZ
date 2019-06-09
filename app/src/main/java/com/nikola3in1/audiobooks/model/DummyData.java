@@ -78,12 +78,15 @@ public class DummyData {
 
         ArrayList<Chapter> chapters = new ArrayList<>();
 
-        chapters.add(new Chapter("uvod", "asdasdas", "http://www.dkcmajdan.org.rs/data/audio_bajke/1.uvod.mp3"));
-        chapters.add(new Chapter("audio 1", "asdasdas", "http://192.168.0.69/audio/audio1.mp3"));
-        chapters.add(new Chapter("audio 2", "asdaaasd1as", "http://192.168.0.69/audio/audio2.mp3"));
-        chapters.add(new Chapter("audio 22", "asd423asdas", "http://192.168.0.69/audio/audio2.mp3"));
-        chapters.add(new Chapter("horse", "asdas12412das", "https://www.w3schools.com/html/horse.ogg"));
-        chapters.add(new Chapter("audio 23", "adas", "http://192.168.0.69/audio/audio2.mp3"));
+        chapters.add(new Chapter("uvod1", "asdasdas", "http://www.dkcmajdan.org.rs/data/audio_bajke/1.uvod.mp3"));
+        chapters.add(new Chapter("uvod2", "asdasdas", "http://www.dkcmajdan.org.rs/data/audio_bajke/1.uvod.mp3"));
+        chapters.add(new Chapter("uvod3", "asdasdas", "http://www.dkcmajdan.org.rs/data/audio_bajke/1.uvod.mp3"));
+        chapters.add(new Chapter("uvod4", "asdasdas", "http://www.dkcmajdan.org.rs/data/audio_bajke/1.uvod.mp3"));
+//        chapters.add(new Chapter("audio 1", "asdasdas", "http://192.168.0.69/audio/audio1.mp3"));
+//        chapters.add(new Chapter("audio 2", "asdaaasd1as", "http://192.168.0.69/audio/audio2.mp3"));
+//        chapters.add(new Chapter("audio 22", "asd423asdas", "http://192.168.0.69/audio/audio2.mp3"));
+//        chapters.add(new Chapter("horse", "asdas12412das", "https://www.w3schools.com/html/horse.ogg"));
+//        chapters.add(new Chapter("audio 23", "adas", "http://192.168.0.69/audio/audio2.mp3"));
         book.setLastPlayedChapter(new Chapter("audio 1", "asdasdas", "http://192.168.0.69/audio/audio1.mp3"));
         book.setChapters(chapters);
 
@@ -100,12 +103,15 @@ public class DummyData {
         ArrayList<Chapter> chapters1 = new ArrayList<>();
 
         chapters1.add(new Chapter("uvod", "asdasdas", "http://www.dkcmajdan.org.rs/data/audio_bajke/1.uvod.mp3"));
-        chapters1.add(new Chapter("audio 1", "asdasdas", "http://192.168.0.69/audio/audio1.mp3"));
-        chapters1.add(new Chapter("audio 2", "asdaaasd1as", "http://192.168.0.69/audio/audio2.mp3"));
-        chapters1.add(new Chapter("audio 22", "asd423asdas", "http://192.168.0.69/audio/audio2.mp3"));
-        chapters1.add(new Chapter("horse", "asdas12412das", "https://www.w3schools.com/html/horse.ogg"));
-        chapters1.add(new Chapter("audio 23", "adas", "http://192.168.0.69/audio/audio2.mp3"));
-        book1.setLastPlayedChapter(new Chapter("audio 1", "asdasdas", "http://192.168.0.69/audio/audio1.mp3"));
+        chapters1.add(new Chapter("uvod2", "asdasdas", "http://www.dkcmajdan.org.rs/data/audio_bajke/1.uvod.mp3"));
+        chapters1.add(new Chapter("uvod3", "asdasdas", "http://www.dkcmajdan.org.rs/data/audio_bajke/1.uvod.mp3"));
+        chapters1.add(new Chapter("uvod4", "asdasdas", "http://www.dkcmajdan.org.rs/data/audio_bajke/1.uvod.mp3"));
+//        chapters1.add(new Chapter("audio 1", "asdasdas", "http://192.168.0.69/audio/audio1.mp3"));
+//        chapters1.add(new Chapter("audio 2", "asdaaasd1as", "http://192.168.0.69/audio/audio2.mp3"));
+//        chapters1.add(new Chapter("audio 22", "asd423asdas", "http://192.168.0.69/audio/audio2.mp3"));
+//        chapters1.add(new Chapter("horse", "asdas12412das", "https://www.w3schools.com/html/horse.ogg"));
+//        chapters1.add(new Chapter("audio 23", "adas", "http://192.168.0.69/audio/audio2.mp3"));
+//        book1.setLastPlayedChapter(new Chapter("audio 1", "asdasdas", "http://192.168.0.69/audio/audio1.mp3"));
         book1.setChapters(chapters1);
 
 

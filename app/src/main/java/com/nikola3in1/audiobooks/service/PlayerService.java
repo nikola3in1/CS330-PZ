@@ -15,21 +15,20 @@ import com.nikola3in1.audiobooks.util.PlayerEventConstants;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PlayerService extends Service {
     // Book that is beign played
     private Book book;
-    private Integer currentChapterPosition = 0;
+    private AtomicInteger currentChapterPosition = new AtomicInteger(0);
     private MediaPlayer player;
     private int currentProgress = 0;
     private boolean hasPlayed = false;
     private IBinder mBinder = new LocalBinder();
     private UserPreferences userPreferences;
 
-    // Fast forward & fast backwards value
+    // Fast forward & rewind value
     private Integer mediaSkipValue = 1000 * 20;
-
-    private PlayerObserver playerObserver = null;
 
     public int onStartCommand(Intent intent, int flags, int startId) {
         int val = super.onStartCommand(intent, flags, startId);
@@ -38,46 +37,56 @@ public class PlayerService extends Service {
         if (args == null || args.get(Book.BUNDLE) == null) {
             return val;
         }
-
         if (args.get(UserPreferences.BUNDLE) != null) {
             userPreferences = (UserPreferences) args.get(UserPreferences.BUNDLE);
             mediaSkipValue = userPreferences.getMediaSkipValue();
         }
-
         book = (Book) args.get(Book.BUNDLE);
+        return val;
+    }
 
-        initPlayer();
+    public void playBook(Book book) {
+        if (book != null) {
+            this.book = book;
+            hasPlayed = false;
+            currentProgress = 0;
+            currentChapterPosition.set(0);
+            if (player == null) {
+                System.out.println("CREATING MEDIA PLAYER !!!");
+                player = new MediaPlayer();
+            } else {
+                player.stop();
+                player.reset();
+            }
+            initPlayer();
+            events();
+        }
 
+    }
+
+    private void events() {
         // Events
         player.setOnCompletionListener((e) -> {
-            stopObserver();
-
-            if (book.getChapters().size() == currentChapterPosition) {
+            if (book.getChapters().size() == currentChapterPosition.get()) {
                 finishBook();
             } else {
                 sendNextChapter();
                 prepareNextChapter();
-                startObserver();
                 player.start();
             }
             sendMaxProgress();
             sendProgressUpdate(player.getCurrentPosition());
         });
-
-        return val;
     }
 
     @Override
     public void onDestroy() {
-        System.out.println("DESTORY SERVICE");
         super.onDestroy();
     }
 
     private void initPlayer() {
-        player = new MediaPlayer();
-        playerObserver = new PlayerObserver();
         // Starting from begining
-
+        System.out.println("initPlayer: lastPlayedCHapter " + book.getLastPlayedChapter());
         if (book.getLastPlayedChapter() != null) {
             // Start from last played chapter
             System.out.println("START FROM LAST");
@@ -88,20 +97,20 @@ public class PlayerService extends Service {
             prepareNextChapter();
         } else {
             // Start from bookmark
-            System.out.println("START FROM THE BOOKMARK??!?!?");
         }
+        sendNextChapter();
     }
 
     private void continueFromChapter() {
         Chapter lastPlayedChapter = book.getLastPlayedChapter();
         Integer lastChapterPosition = book.getChapters().indexOf(lastPlayedChapter);
         if (lastChapterPosition >= 0) {
-            currentChapterPosition = lastChapterPosition;
+//            currentChapterPosition = lastChapterPosition;
+            currentChapterPosition.set(lastChapterPosition);
             System.out.println("CHECKPOINT: " + lastPlayedChapter.getCheckpoint());
 
             prepareNextChapter();
             if (lastPlayedChapter.getCheckpoint() != null) {
-                System.out.println("CHECK CHEKC");
                 currentProgress = lastPlayedChapter.getCheckpoint();
                 sendMaxProgress();
                 sendProgressUpdate(currentProgress);
@@ -135,25 +144,20 @@ public class PlayerService extends Service {
         // Emit event to activity
         System.out.println("BOOK IS FINISHED");
         sendBookIsFinished();
-        currentChapterPosition = 0;
+//        currentChapterPosition = 0;
+        currentChapterPosition.set(0);
+
         sendNextChapter();
         prepareNextChapter();
-        startObserver();
     }
 
-    private void sendBookIsFinished() {
-        sendMessage(PlayerEventConstants.FINISHED, true);
-    }
 
-    /* Controlls */
+    /* Media Controls */
     public Book play() {
-//        sendMessage("asd","PLAY");
-
         if (!hasPlayed) {
             sendMaxProgress();
             player.start();
             hasPlayed = true;
-            startObserver();
             if (currentProgress > 0) {
                 System.out.println("SEEKING TO :" + currentProgress);
                 player.seekTo(currentProgress);
@@ -193,11 +197,15 @@ public class PlayerService extends Service {
     /* Events */
 
     private void sendNextChapter() {
-        sendMessage(PlayerEventConstants.CHAPTER, book.getChapters().get(currentChapterPosition));
+        sendMessage(PlayerEventConstants.CHAPTER, currentChapterPosition.get());
     }
 
     private void sendMaxProgress() {
         sendMessage(PlayerEventConstants.MAX_PROGRESS, player.getDuration());
+    }
+
+    private void sendBookIsFinished() {
+        sendMessage(PlayerEventConstants.FINISHED, true);
     }
 
     private void sendProgressUpdate(Integer progress) {
@@ -218,10 +226,6 @@ public class PlayerService extends Service {
         return mBinder;
     }
 
-    public void setProgress(Integer progress) {
-        currentProgress = progress;
-        player.seekTo(progress);
-    }
 
     public class LocalBinder extends Binder {
         public PlayerService getServerInstance() {
@@ -229,14 +233,43 @@ public class PlayerService extends Service {
         }
     }
 
+    public boolean isReady() {
+        return player != null;
+    }
+
     /* Getters and Setters */
 
-    public Integer getMaxProgress(){
+    public void setProgress(Integer progress) {
+        currentProgress = progress;
+        player.seekTo(progress);
+    }
+
+    public int getCurrentPosition() {
+        if (player != null) {
+            return player.getCurrentPosition();
+        }
+        return 0;
+    }
+
+
+    public synchronized Integer getCurrentChapterPosition() {
+        if (player != null) {
+            return currentChapterPosition.get();
+        }
+        return 0;
+    }
+
+    public void setCurrentChapterPosition(Integer currentChapterPosition) {
+        this.currentChapterPosition.set(currentChapterPosition);
+//        this.currentChapterPosition = currentChapterPosition;
+    }
+
+    public Integer getMaxProgress() {
         return player.getDuration();
     }
 
     private Chapter getNextChapter() {
-        return book.getChapters().get(currentChapterPosition++);
+        return book.getChapters().get(currentChapterPosition.getAndIncrement());
     }
 
     public Book getBook() {
@@ -245,40 +278,6 @@ public class PlayerService extends Service {
 
     public void setBook(Book book) {
         this.book = book;
-    }
-
-    /* Player Observer */
-    private class PlayerObserver implements Runnable {
-        AtomicBoolean stop = new AtomicBoolean(false);
-
-        @Override
-        public void run() {
-            while (!stop.get()) {
-                int progress = player.getCurrentPosition();
-                sendProgressUpdate(progress);
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }
-
-        public void stop() {
-            stop.set(true);
-        }
-    }
-
-    private void startObserver() {
-        playerObserver = new PlayerObserver();
-        new Thread(playerObserver).start();
-    }
-
-    public void stopObserver() {
-        if (playerObserver != null) {
-            playerObserver.stop();
-        }
     }
 }
 

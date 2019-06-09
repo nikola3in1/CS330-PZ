@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -21,13 +20,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 import com.nikola3in1.audiobooks.R;
 import com.nikola3in1.audiobooks.model.Book;
+import com.nikola3in1.audiobooks.model.MyLibrary;
 import com.nikola3in1.audiobooks.util.PlayerEventConstants;
 
 import static com.android.volley.VolleyLog.TAG;
 import static com.nikola3in1.audiobooks.util.StringFormater.*;
 
 public class BookFragment extends Fragment {
-
     private Book book;
     private Context ctx;
     private String TITLE;
@@ -46,7 +45,6 @@ public class BookFragment extends Fragment {
             getActivity().setTitle(TITLE);
         }
 
-
         String duration = setDuration(60 * 60 * 3 + 43);
         System.out.println("Duration: " + duration);
     }
@@ -55,11 +53,9 @@ public class BookFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_book, container, false);
-
         initBook(contentView);
         return contentView;
     }
-
 
     private void playBook() {
         Intent intent = new Intent("data");
