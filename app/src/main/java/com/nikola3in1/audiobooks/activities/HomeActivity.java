@@ -132,11 +132,13 @@ public class HomeActivity extends AppCompatActivity
                     case PlayerEventConstants.PROGRESS:
                         Integer progress = (Integer) data.get(PlayerEventConstants.PROGRESS);
                         if (progress != null) {
+                            System.out.println("RECIEVED PROGRESS "+progress);
                             updateProgressBar(progress);
                         }
                         break;
                     case PlayerEventConstants.MAX_PROGRESS:
                         Integer maxProgress = (Integer) data.get(PlayerEventConstants.MAX_PROGRESS);
+                        System.out.println("RECIEVED MAX PROGRESS :"+maxProgress);
                         if (maxProgress != null) {
                             setMaxProgressBar(maxProgress);
                         }
@@ -209,6 +211,7 @@ public class HomeActivity extends AppCompatActivity
 
         System.out.println("LAST PLAYED BOOK" + currentBook);
 //        this.currentBook = null; // TESTING
+
         this.userPreferences = UserData.getUserPreferences();
         System.out.println("USER PREFS" + userPreferences);
         this.myLibrary = UserData.getMyLibrary();
@@ -301,6 +304,17 @@ public class HomeActivity extends AppCompatActivity
         fastForwardBtn.setOnClickListener(new OnFastForwardButtonClickListener());
         fastBackwardsBtn.setOnClickListener(new OnRewindButtonClickListener());
 
+        fastForwardBtn.setOnLongClickListener((e)->{
+            playerService.playNextChapter();
+            return true;
+        });
+
+        fastBackwardsBtn.setOnLongClickListener((e)->{
+            playerService.playPreviousChapter();
+            return true;
+        });
+
+
         // Title
         TextView title = findViewById(R.id.player_title);
         title.setText(playedBook.getTitle());
@@ -322,7 +336,7 @@ public class HomeActivity extends AppCompatActivity
 
         // Seekbar init
         seekBar = findViewById(R.id.player_seekbar);
-        seekBar.setMax(100);
+//        seekBar.setMax(100);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -404,6 +418,9 @@ public class HomeActivity extends AppCompatActivity
     private synchronized void setCurrentChapter(int chapterPosition) {
         // Called from the update thread
         if (chapterPosition >= 0) {
+            if (chapterPosition == currentBook.getChapters().size()) {
+                chapterPosition--;
+            }
             Chapter chapter = currentBook.getChapters().get(chapterPosition);
 
             if (chapter != null) {
@@ -441,15 +458,17 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void bookIsFinished() {
-        System.out.println("BOOK IS FINISHED");
+        System.out.println("BOOK IS FINISHED ACTIVITY");
         updatePlayButton(true);
     }
 
     private void updatePlayButton(boolean isPaused) {
         // Called from update thread
 
+        // When player is not rendered
         ImageButton footerPlayButton = findViewById(R.id.footer_player_play);
         ImageButton playButton = findViewById(R.id.player_play);
+
         if (!isPaused) {
             footerPlayButton.setImageResource(android.R.drawable.ic_media_pause);
             playButton.setImageResource(android.R.drawable.ic_media_pause);
@@ -586,12 +605,19 @@ public class HomeActivity extends AppCompatActivity
         public void run() {
             while (!stop.get()) {
                 int progress = getPlayerService().getCurrentPosition();
-                updateProgressBar(progress);
+                if (progress > 0) {
+                    updateProgressBar(progress);
+                }
 
-                if (getPlayerService().isPlaying()) {
-                    updatePlayButton(false);
-                } else {
-                    updatePlayButton(true);
+                if(getPlayerService().isPrepared()){
+                    if (getPlayerService().isPlaying()) {
+                        updatePlayButton(false);
+                    } else {
+                        updatePlayButton(true);
+                    }
+                }else{
+                    System.out.println("Not prepared yet");
+//                    Toast.makeText(ctx,"Chapter is loading, please wait.",Toast.LENGTH_SHORT).show();
                 }
 
                 try {
