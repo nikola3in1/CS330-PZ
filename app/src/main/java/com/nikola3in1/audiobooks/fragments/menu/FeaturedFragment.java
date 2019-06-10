@@ -18,6 +18,7 @@ import com.nikola3in1.audiobooks.R;
 import com.nikola3in1.audiobooks.adapters.FeaturedFragmentAdapter;
 import com.nikola3in1.audiobooks.model.DummyData;
 import com.nikola3in1.audiobooks.model.FeaturedList;
+import com.synnapps.carouselview.CarouselView;
 
 import java.util.ArrayList;
 
@@ -38,15 +39,29 @@ public class FeaturedFragment extends Fragment {
         View contentView = inflater.inflate(R.layout.fragment_featured, container, false);
 
         // Fetch data from backend ...
-        ArrayList<FeaturedList> categories = DummyData.getFeaturedTestData();
-        initFeaturedLists(contentView, categories);
+        ArrayList<FeaturedList> featuredList = DummyData.getFeaturedTestData();
+
+        getActivity().runOnUiThread(() -> {
+            initFeaturedTitles(contentView);
+            initFeaturedLists(contentView, featuredList);
+        });
         return contentView;
     }
 
-    private void initFeaturedLists(View contentView, ArrayList<FeaturedList> categories) {
+    private void initFeaturedTitles(View contentView) {
+        final int[] pics = new int[]{R.raw.ad1, R.raw.ad2, R.raw.ad3};
+        CarouselView carouselView = contentView.findViewById(R.id.carouselView);
+        carouselView.setPageCount(pics.length);
+        carouselView.setImageListener((position, imageView) -> {
+            imageView.setImageResource(pics[position]);
+        });
+    }
+
+    private void initFeaturedLists(View contentView, ArrayList<FeaturedList> featuredList) {
 
         // Add Categories to home page
-        for (FeaturedList c : categories) {
+        for (FeaturedList c : featuredList) {
+
             // Create LinearLayout for category, here we add RecyclerView and TextView
             LinearLayout v = new LinearLayout(ctx);
             v.setLayoutParams(new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT));

@@ -43,7 +43,7 @@ public class CategoryFragment extends Fragment {
         // Fetch data from backend...
         books = DummyData.getBooks();
 
-        initBooks(contentView,books);
+        initBooks(contentView, books);
         return contentView;
     }
 

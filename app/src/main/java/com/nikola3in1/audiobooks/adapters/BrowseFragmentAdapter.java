@@ -74,7 +74,7 @@ public class BrowseFragmentAdapter extends RecyclerView.Adapter<BrowseFragmentAd
     private void displaySubcategoies(Category category) {
         // Setting new fragment with subcateories data
         Bundle subcategoriesData = new Bundle();
-        subcategoriesData.putString("subcategoriesOf",category.getTitle());
+        subcategoriesData.putSerializable("subcategoriesOf",category);
         BrowseFragment subcategoriesFragment = new BrowseFragment();
         subcategoriesFragment.setArguments(subcategoriesData);
         // Calling FrameManager

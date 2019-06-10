@@ -46,9 +46,9 @@ public class BrowseFragment extends Fragment {
             // Subcategories, args passed from BrowseFragmentAdapter,
             // from onClick event
             isSubcategory = true;
-            String parentCategory = (String) args.get("subcategoriesOf");
+            Category parentCategory = (Category) args.get("subcategoriesOf");
             Log.d(TAG,"Getting subcategories of " + parentCategory);
-            categories = DummyData.getSubcategoriesTestData();
+            categories = DummyData.getSubcategoriesTestData(parentCategory);
         } else {
             // Categories, Fetch data from backend ...
             categories = DummyData.getCategoriesTestData();

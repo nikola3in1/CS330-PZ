@@ -10,6 +10,7 @@ import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -51,6 +52,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static android.app.PendingIntent.getActivity;
 import static com.nikola3in1.audiobooks.util.StringFormater.setRatingsNumber;
 import static com.nikola3in1.audiobooks.util.StringFormater.setStars;
 
@@ -91,6 +93,7 @@ public class HomeActivity extends AppCompatActivity
         UserData.setLastPlayedBook(this, book);
         currentBook = UserData.getLastPlayedBook();
         System.out.println("Last played book: " + book);
+
     }
 
     // Service binder
@@ -132,13 +135,13 @@ public class HomeActivity extends AppCompatActivity
                     case PlayerEventConstants.PROGRESS:
                         Integer progress = (Integer) data.get(PlayerEventConstants.PROGRESS);
                         if (progress != null) {
-                            System.out.println("RECIEVED PROGRESS "+progress);
+                            System.out.println("RECIEVED PROGRESS " + progress);
                             updateProgressBar(progress);
                         }
                         break;
                     case PlayerEventConstants.MAX_PROGRESS:
                         Integer maxProgress = (Integer) data.get(PlayerEventConstants.MAX_PROGRESS);
-                        System.out.println("RECIEVED MAX PROGRESS :"+maxProgress);
+                        System.out.println("RECIEVED MAX PROGRESS :" + maxProgress);
                         if (maxProgress != null) {
                             setMaxProgressBar(maxProgress);
                         }
@@ -191,12 +194,13 @@ public class HomeActivity extends AppCompatActivity
         initNavigation();
     }
 
+
+    /* Init methods*/
     private void initReciever() {
         intentFilter = new IntentFilter();
         intentFilter.addAction("data");
         registerReceiver(receiver, intentFilter);
     }
-
 
     private void initUserData() {
         // Loads app state from internal storage
@@ -247,32 +251,23 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-    private void playBook(Book book) {
-        System.out.println("SETUP PLAYER");
-        // Populate player layout
+    private void initNavigation() {
+        // Initiates Navigation and Actionbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
 
-        myLibrary.addBook(this, book);
-
-        System.out.println(Arrays.toString(myLibrary.getBooks().toArray()));
-
-        currentBook = book;
-
-        setupPlayer(book);
-
-        if (playerObserver != null && !playerObserver.stop.get()) {
-            System.out.println("STOPING OBSERVER");
-            stopObserver();
-        }
-        if (playerService != null) {
-            System.out.println("SETTING NEW BOOK");
-            getPlayerService().playBook(book);
-            startObserver();
-        }
-
-        System.out.println("PLAYBOOK :" + book);
-
+        // Remove navigation view shadow
+        drawer.setScrimColor(Color.TRANSPARENT);
     }
 
+    /* Layout init */
     private void setupPlayer(Book playedBook) {
 
         //Setting the footer height
@@ -304,12 +299,14 @@ public class HomeActivity extends AppCompatActivity
         fastForwardBtn.setOnClickListener(new OnFastForwardButtonClickListener());
         fastBackwardsBtn.setOnClickListener(new OnRewindButtonClickListener());
 
-        fastForwardBtn.setOnLongClickListener((e)->{
+        fastForwardBtn.setOnLongClickListener((e) -> {
+            System.out.println("REWIND");
             playerService.playNextChapter();
             return true;
         });
 
-        fastBackwardsBtn.setOnLongClickListener((e)->{
+        fastBackwardsBtn.setOnLongClickListener((e) -> {
+            System.out.println("REWIND");
             playerService.playPreviousChapter();
             return true;
         });
@@ -391,6 +388,7 @@ public class HomeActivity extends AppCompatActivity
         footerAuthor.setText(author);
     }
 
+    /* Fragment Manager */
     public static void displayFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame, fragment).addToBackStack("tag");
@@ -415,6 +413,25 @@ public class HomeActivity extends AppCompatActivity
         UserData.setLastPlayedBook(ctx, book);
     }
 
+    private void bookIsFinished() {
+        System.out.println("BOOK IS FINISHED ACTIVITY");
+        updatePlayButton(true);
+    }
+
+    private synchronized void updateProgressBar(Integer progress) {
+        if (!seekBarLocked) {
+            seekBar.setProgress(progress);
+
+            // Saving progress
+            Chapter lastPlayedChapter = currentBook.getLastPlayedChapter();
+            if (lastPlayedChapter != null) {
+                lastPlayedChapter.setCheckpoint(progress);
+                currentBook.setLastPlayedChapter(lastPlayedChapter);
+                UserData.setLastPlayedBook(this, currentBook);
+            }
+        }
+    }
+
     private synchronized void setCurrentChapter(int chapterPosition) {
         // Called from the update thread
         if (chapterPosition >= 0) {
@@ -437,31 +454,42 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
-
     private void setMaxProgressBar(Integer maxProgress) {
         System.out.println("SETTING MAX PROGRESS");
         seekBar.setMax(maxProgress);
     }
 
-    private synchronized void updateProgressBar(Integer progress) {
-        if (!seekBarLocked) {
-            seekBar.setProgress(progress);
+    private void playBook(Book book) {
+        System.out.println("SETUP PLAYER");
+        // Populate player layout
 
-            // Saving progress
-            Chapter lastPlayedChapter = currentBook.getLastPlayedChapter();
-            if (lastPlayedChapter != null) {
-                lastPlayedChapter.setCheckpoint(progress);
-                currentBook.setLastPlayedChapter(lastPlayedChapter);
-                UserData.setLastPlayedBook(this, currentBook);
-            }
+        myLibrary.addBook(this, book);
+
+        System.out.println(Arrays.toString(myLibrary.getBooks().toArray()));
+
+        currentBook = book;
+
+        setupPlayer(book);
+
+        if (playerObserver != null && !playerObserver.stop.get()) {
+            System.out.println("STOPING OBSERVER");
+            stopObserver();
         }
+        if (playerService != null) {
+            System.out.println("SETTING NEW BOOK");
+            getPlayerService().playBook(book);
+            startObserver();
+        }
+
+        System.out.println("PLAYBOOK :" + book);
+
     }
 
-    private void bookIsFinished() {
-        System.out.println("BOOK IS FINISHED ACTIVITY");
-        updatePlayButton(true);
+    public synchronized static PlayerService getPlayerService() {
+        return playerService;
     }
 
+    /* Observer thread */
     private void updatePlayButton(boolean isPaused) {
         // Called from update thread
 
@@ -479,22 +507,6 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-    private void initNavigation() {
-        // Initiates Navigation and Actionbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
-
-        // Remove navigation view shadow
-        drawer.setScrimColor(Color.TRANSPARENT);
-    }
-
     /* Life Cycle & Activity Events */
     @Override
     protected void onResume() {
@@ -510,6 +522,7 @@ public class HomeActivity extends AppCompatActivity
         System.out.println("DESTROYED");
         unbindService(mConnection);
     }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -533,13 +546,38 @@ public class HomeActivity extends AppCompatActivity
         return true;
     }
 
+
+    private boolean isBackPressed = false;
+    private long maxDelayOnPress = 3000; // 3 sec
+    private long backPressedTime;
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            long timeElapsed = System.currentTimeMillis() - backPressedTime;
+            System.out.println("Elapsed: " + timeElapsed);
+            if (isBackPressed && timeElapsed < maxDelayOnPress) {
+                finish();
+                super.onBackPressed();
+            } else {
+
+                isBackPressed = false;
+            }
+
+            Fragment f = fragmentManager.findFragmentById(R.id.frame);
+            if (f instanceof FeaturedFragment) {
+                Toast.makeText(ctx, "Press back again to exit", Toast.LENGTH_SHORT).show();
+                isBackPressed = true;
+                backPressedTime = System.currentTimeMillis();
+
+            } else {
+                isBackPressed = false;
+                super.onBackPressed();
+            }
+
         }
     }
 
@@ -565,6 +603,7 @@ public class HomeActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    /* OnButtonClickListeners */
     private class OnPlayButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -592,11 +631,6 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-
-    public synchronized static PlayerService getPlayerService() {
-        return playerService;
-    }
-
     /* Player Observer */
     private class PlayerObserver implements Runnable {
         AtomicBoolean stop = new AtomicBoolean(false);
@@ -609,13 +643,13 @@ public class HomeActivity extends AppCompatActivity
                     updateProgressBar(progress);
                 }
 
-                if(getPlayerService().isPrepared()){
+                if (getPlayerService().isPrepared()) {
                     if (getPlayerService().isPlaying()) {
                         updatePlayButton(false);
                     } else {
                         updatePlayButton(true);
                     }
-                }else{
+                } else {
                     System.out.println("Not prepared yet");
 //                    Toast.makeText(ctx,"Chapter is loading, please wait.",Toast.LENGTH_SHORT).show();
                 }

@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.View;
 import android.widget.Toast;
 
 import com.nikola3in1.audiobooks.model.Book;
@@ -28,6 +29,7 @@ public class PlayerService extends Service {
     private IBinder mBinder = new LocalBinder();
     private boolean isPrepared = false;
     private UserPreferences userPreferences;
+
 
     // Fast forward & rewind value
     private Integer mediaSkipValue = 1000 * 20;
@@ -69,8 +71,6 @@ public class PlayerService extends Service {
     private void events() {
         // Events
         player.setOnCompletionListener((e) -> {
-
-
             playNextChapter();
 //
 //            if (book.getChapters().size() == currentChapterPosition.get()) {
@@ -86,9 +86,40 @@ public class PlayerService extends Service {
             sendProgressUpdate(player.getCurrentPosition());
         });
 
+        player.setOnErrorListener((mp, what, extra) -> {
+            switch (what) {
+                case MediaPlayer.MEDIA_ERROR_IO:
+                    try {
+                        player.prepare();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+            }
+//            playPreviousChapter();
+            return true;
+        });
 
         player.setOnPreparedListener((e) -> {
             isPrepared = true;
+                player.start();
+        });
+
+        player.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+
+            @Override
+            public boolean onInfo(MediaPlayer mp, int what, int extra) {
+                switch (what) {
+                    case MediaPlayer.MEDIA_INFO_BUFFERING_START:
+                        System.out.println("BUFFERING");
+//                        loadingDialog.setVisibility(View.VISIBLE);
+                        break;
+                    case MediaPlayer.MEDIA_INFO_BUFFERING_END:
+                        System.out.println("BUFFERING IS DONE");
+//                        loadingDialog.setVisibility(View.GONE);
+                        break;
+                }
+                return false;
+            }
         });
     }
 
@@ -96,17 +127,22 @@ public class PlayerService extends Service {
 //        isPrepared = false;
         if (currentChapterPosition.get() - 1 > 0) {
             Chapter nextChapter = getPreviousChapter();
+            currentProgress = 0;
             System.out.println("INDEX OF NEXT CHAPTER: " + currentChapterPosition);
             sendPreviousChapter();
             prepareChapter(nextChapter);
+            sendMaxProgress();
+            sendProgressUpdate(currentProgress);
             book.setLastPlayedChapter(nextChapter);
-        }else{
-            player.start();
+        } else {
+            System.out.println(" NOT PREPARED ");
+                player.start();
+//            player.start();
         }
     }
 
     private void sendPreviousChapter() {
-        sendMessage(PlayerEventConstants.CHAPTER, currentChapterPosition.get()-1);
+        sendMessage(PlayerEventConstants.CHAPTER, currentChapterPosition.get() - 1);
     }
 
     public void playNextChapter() {
@@ -118,7 +154,8 @@ public class PlayerService extends Service {
             prepareNextChapter();
 //                sendCurrentChapter(); old
 
-            player.start();
+            System.out.println(" NOT PREPARED ");
+
         }
 
 //        System.out.println("SKIPING CHAPTER");
@@ -153,6 +190,7 @@ public class PlayerService extends Service {
         } else {
             // Start from bookmark
         }
+
         //Progress update?
 
 //        sendNextChapter();
@@ -198,13 +236,13 @@ public class PlayerService extends Service {
                 player.prepare();
             }
         } catch (IOException e) {
+//            prepareChapter(chapter);
             e.printStackTrace();
         }
     }
 
 
     private void prepareNextChapter() {
-        isPrepared = false;
         Chapter nextChapter = getNextChapter();
         System.out.println("INDEX OF NEXT CHAPTER: " + currentChapterPosition);
         prepareChapter(nextChapter);
@@ -227,10 +265,10 @@ public class PlayerService extends Service {
 
     /* Media Controls */
     public Book play() {
-        while (!isPrepared) {
+//        while (!isPrepared) {
             System.out.println("NOT PREPARED YET");
 //            Toast.makeText(, "", Toast.LENGTH_SHORT).show();
-        }
+//        }
 
         if (!hasPlayed) {
             sendMaxProgress();
@@ -280,7 +318,7 @@ public class PlayerService extends Service {
     }
 
     private void sendMaxProgress() {
-        sendMessage(PlayerEventConstants.MAX_PROGRESS, player.getDuration());
+            sendMessage(PlayerEventConstants.MAX_PROGRESS, player.getDuration());
     }
 
     private void sendBookIsFinished() {
@@ -357,7 +395,7 @@ public class PlayerService extends Service {
     }
 
     private Chapter getPreviousChapter() {
-        return book.getChapters().get(currentChapterPosition.decrementAndGet());
+        return book.getChapters().get(currentChapterPosition.decrementAndGet() - 1);
     }
 
     public Book getBook() {

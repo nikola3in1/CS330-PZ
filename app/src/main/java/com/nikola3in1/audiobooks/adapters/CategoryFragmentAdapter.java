@@ -50,9 +50,10 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<CategoryFragme
         Book leftBook = pair.get(0);
         Book rightBook = pair.get(1);
 
+
         //Loading images
-        Glide.with(context)
-                .asBitmap().
+        Glide.with(context).
+                asBitmap().
                 load(leftBook.getImageUrl()).
                 into(viewHolder.leftImage);
         Glide.with(context)
@@ -110,6 +111,7 @@ public class CategoryFragmentAdapter extends RecyclerView.Adapter<CategoryFragme
             rightImage = itemView.findViewById(R.id.category_book_image2);
             rightTitle = itemView.findViewById(R.id.category_book_title2);
             rightAuthor = itemView.findViewById(R.id.category_book_author2);
+
         }
     }
 }
