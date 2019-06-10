@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -26,6 +27,15 @@ public class LoginActivity extends AppCompatActivity{
             startActivityForResult(AuthService.getInstance().signIn(), RC_SIGN_IN);
         });
     }
+
+
+    private void demoSendIdToken(GoogleSignInAccount account){
+//        Toast.makeText(this, "tokenId sent for authentication with backend", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Hello "+account.getDisplayName()+", welcome to Audiobooks!", Toast.LENGTH_LONG).show();
+        startActivity(new Intent(this,HomeActivity.class));
+    }
+
+
     private void sendIdToken(String token){
         //Backend authentication
         APIClient.login(token,this, response -> {
@@ -49,9 +59,11 @@ public class LoginActivity extends AppCompatActivity{
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            sendIdToken(account.getIdToken());
-            // Signed in successfully, show authenticated UI.
-//            updateUI(account);
+//            sendIdToken(account.getIdToken());
+
+            // Demonstration
+            demoSendIdToken(account);
+
         } catch (ApiException e) {
             Log.w("ERROR", e.getMessage());
             e.printStackTrace();
@@ -62,23 +74,6 @@ public class LoginActivity extends AppCompatActivity{
         System.out.println("Token id: "+account.getIdToken());
         System.out.println("Account: " + account.getEmail() + " " + account.getDisplayName());
     }
-
-
-//    @Override
-//    public void onClick(View v) {
-//        switch (v.getId()) {
-//            case R.id.sign_in_btn:
-//                startActivityForResult(AuthService.getInstance().signIn(), RC_SIGN_IN);
-//                signInButton.setVisibility(View.GONE);
-//                break;
-////            case R.id.sign_out_btn:
-////                AuthService.getInstance().singOut();
-////                signInButton.setVisibility(View.VISIBLE);
-////                break;
-////            case R.id.test:
-////                callTest();
-//        }
-//    }
 
     private void callTest() {
         APIClient.test(this,response -> {

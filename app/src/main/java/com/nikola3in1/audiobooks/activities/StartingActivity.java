@@ -25,17 +25,28 @@ public class StartingActivity extends AppCompatActivity {
 
         Context ctx = this;
         new Handler().postDelayed(() -> {
+
+            // DEMONSTRATION
             if (account != null) {
-                //user is already signed in, fetch access token and opet home
-                APIClient.login(account.getIdToken()
-                        , ctx, response -> {
-                            Log.w("Backend response", response.toString());
-                            startActivity(new Intent(ctx, HomeActivity.class));
-                        });
+                startActivity(new Intent(ctx,HomeActivity.class));
             } else {
-                //user is not signed in, open sign in page
                 startActivity(new Intent(ctx, LoginActivity.class));
             }
+
+            // DEMONSTRATION
+
+
+//            if (account != null) {
+//                //user is already signed in, fetch access token and opet home
+//                APIClient.login(account.getIdToken()
+//                        , ctx, response -> {
+//                            Log.w("Backend response", response.toString());
+//                            startActivity(new Intent(ctx, HomeActivity.class));
+//                        });
+//            } else {
+//                //user is not signed in, open sign in page
+//                startActivity(new Intent(ctx, LoginActivity.class));
+//            }
 
             finish();
         }, TIME_OUT);

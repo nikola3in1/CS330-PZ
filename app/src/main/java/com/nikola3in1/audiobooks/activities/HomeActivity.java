@@ -52,7 +52,6 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static android.app.PendingIntent.getActivity;
 import static com.nikola3in1.audiobooks.util.StringFormater.setRatingsNumber;
 import static com.nikola3in1.audiobooks.util.StringFormater.setStars;
 
@@ -175,7 +174,6 @@ public class HomeActivity extends AppCompatActivity
 
         // Init UserData
         initUserData();
-//        testSavingBook();
 
         // Init PlayerService
         initPlayerService();
@@ -208,7 +206,7 @@ public class HomeActivity extends AppCompatActivity
 
         this.currentBook = UserData.getLastPlayedBook();
 
-        if (currentBook.getLastPlayedChapter() == null) {
+        if (currentBook!=null && currentBook.getLastPlayedChapter() == null) {
             System.out.println("LAST PALYED IS NULL");
             currentBook.setLastPlayedChapter(currentBook.getChapters().get(0));
         }
@@ -277,8 +275,6 @@ public class HomeActivity extends AppCompatActivity
 
         if (playedBook == null) {
             footerPlayer.setVisibility(View.GONE);
-//            sliding.setVisibility(View.GONE);
-            System.out.println("EXIT FUCKIN THING");
             return;
         }
         System.out.println("PLAYED BOOK " + playedBook);
@@ -300,7 +296,7 @@ public class HomeActivity extends AppCompatActivity
         fastBackwardsBtn.setOnClickListener(new OnRewindButtonClickListener());
 
         fastForwardBtn.setOnLongClickListener((e) -> {
-            System.out.println("REWIND");
+            System.out.println("FAST FORWARD");
             playerService.playNextChapter();
             return true;
         });
@@ -398,7 +394,6 @@ public class HomeActivity extends AppCompatActivity
     /* BroadcastReciever events */
     private void setCurrentChapter(Book book) {
         // Only called on init - setupPlayer
-
         Chapter chapter;
         if (book.getLastPlayedChapter() != null) {
             chapter = book.getLastPlayedChapter();
@@ -597,6 +592,7 @@ public class HomeActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            displayFragment(new SettingsFragment());
             return true;
         }
 

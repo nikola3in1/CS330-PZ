@@ -11,23 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!--<activity-->
-            <!--android:name=".activities.HomeActivity"-->
-            <!--android:label="@string/title_activity_home"-->
-            <!--android:theme="@style/AppTheme.NoActionBar"></activity>-->
-        <!-- <activity -->
-        <!-- android:name=".activities.NavDrawerActivity" -->
-        <!-- android:label="@string/title_activity_nav_drawer" -->
-        <!-- android:theme="@style/AppTheme.NoActionBar"></activity> -->
-        <activity android:name=".activities.StartingActivity" /> <!-- <activity android:name=".activities.HomeActivity2" /> -->
+
         <activity android:name=".activities.LoginActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".activities.HomeActivity" />
         <activity
-            android:name=".activities.HomeActivity"
+            android:name=".activities.StartingActivity"
             android:label="@string/title_activity_nav_drawer"
             android:theme="@style/AppTheme.NoActionBar">
-
-            <!-- <activity android:name=".activities.StartingActivity"> -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

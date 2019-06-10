@@ -72,16 +72,6 @@ public class PlayerService extends Service {
         // Events
         player.setOnCompletionListener((e) -> {
             playNextChapter();
-//
-//            if (book.getChapters().size() == currentChapterPosition.get()) {
-//                finishBook();
-//            } else {
-//                sendNextChapter();
-//                prepareNextChapter();
-////                sendCurrentChapter(); old
-//
-//                player.start();
-//            }
             sendMaxProgress();
             sendProgressUpdate(player.getCurrentPosition());
         });
@@ -101,25 +91,21 @@ public class PlayerService extends Service {
 
         player.setOnPreparedListener((e) -> {
             isPrepared = true;
+            if (hasPlayed) {
                 player.start();
+            }
         });
 
-        player.setOnInfoListener(new MediaPlayer.OnInfoListener() {
-
-            @Override
-            public boolean onInfo(MediaPlayer mp, int what, int extra) {
-                switch (what) {
-                    case MediaPlayer.MEDIA_INFO_BUFFERING_START:
-                        System.out.println("BUFFERING");
-//                        loadingDialog.setVisibility(View.VISIBLE);
-                        break;
-                    case MediaPlayer.MEDIA_INFO_BUFFERING_END:
-                        System.out.println("BUFFERING IS DONE");
-//                        loadingDialog.setVisibility(View.GONE);
-                        break;
-                }
-                return false;
+        player.setOnInfoListener((mp, what, extra) -> {
+            switch (what) {
+                case MediaPlayer.MEDIA_INFO_BUFFERING_START:
+                    System.out.println("BUFFERING");
+                    break;
+                case MediaPlayer.MEDIA_INFO_BUFFERING_END:
+                    System.out.println("BUFFERING IS DONE");
+                    break;
             }
+            return false;
         });
     }
 
@@ -157,12 +143,6 @@ public class PlayerService extends Service {
             System.out.println(" NOT PREPARED ");
 
         }
-
-//        System.out.println("SKIPING CHAPTER");
-//        player.stop();
-//        sendNextChapter();
-//        prepareNextChapter();
-//        player.start();
     }
 
     @Override
@@ -185,6 +165,7 @@ public class PlayerService extends Service {
 
         } else if (book.getBookmark() == null) {
             // Start from begining
+            sendNextChapter();
             System.out.println("START FROM BEGINING");
             prepareNextChapter();
         } else {
@@ -216,11 +197,11 @@ public class PlayerService extends Service {
 
             prepareNextChapter();
             if (lastPlayedChapter.getCheckpoint() != null) {
-                System.out.println("SENDING MAX PROGRESS");
+                System.out.println("SENDING MAX PROGRESS" + lastPlayedChapter.getCheckpoint());
                 currentProgress = lastPlayedChapter.getCheckpoint();
-                sendMaxProgress();
-                sendProgressUpdate(currentProgress);
             }
+            sendMaxProgress();
+            sendProgressUpdate(currentProgress);
 
         }
     }
@@ -265,11 +246,6 @@ public class PlayerService extends Service {
 
     /* Media Controls */
     public Book play() {
-//        while (!isPrepared) {
-            System.out.println("NOT PREPARED YET");
-//            Toast.makeText(, "", Toast.LENGTH_SHORT).show();
-//        }
-
         if (!hasPlayed) {
             sendMaxProgress();
             player.start();

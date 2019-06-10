@@ -60,6 +60,8 @@ public class BookFragment extends Fragment {
     private void playBook() {
         Intent intent = new Intent("data");
         intent.putExtra("event", PlayerEventConstants.PLAY_BOOK);
+        book.setLastPlayedChapter(book.getChapters().get(0));
+        book.getLastPlayedChapter().setCheckpoint(0);
         intent.putExtra(PlayerEventConstants.PLAY_BOOK, book);
         System.out.println("FRAGMENT BOOK:"+book.getLastPlayedChapter());
         ctx.sendBroadcast(intent);

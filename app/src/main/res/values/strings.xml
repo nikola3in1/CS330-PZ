@@ -9,7 +9,7 @@
     <string name="welcome_text">Welcome to Audiobooks</string>
     <string name="app_version">audiobooks.1.0.0</string>
     <string name="login_msg">Sign in and start listening audiobooks for free!</string>
-    <string name="title_activity_nav_drawer">NavDrawerActivity</string>
+    <string name="title_activity_nav_drawer">Audiobooks</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
